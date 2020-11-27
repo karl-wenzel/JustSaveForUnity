@@ -4,9 +4,22 @@ using UnityEngine;
 
 namespace JustSave
 {
+
+
     /// <summary>
     /// This is the main class of the JustSave package.
     /// </summary>
+    /// <example>An example how to get a reference to the Manager: 
+    /// <code>
+    /// using JustSave;
+    /// 
+    /// public class ExampleClass {
+    ///     public void GetReference () {
+    ///         JustSaveManager myJustSaveManager = JustSaveManager.Instance;
+    ///     }
+    /// }
+    /// </code>
+    /// </example>
     public sealed class JustSaveManager
     {
         //constructor
@@ -33,4 +46,5 @@ namespace JustSave
             Debug.Log("Loading...");
         }
     }
+
 }

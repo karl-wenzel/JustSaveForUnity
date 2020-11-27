@@ -1,7 +1,7 @@
 ﻿namespace JustSave
 {
 
-    public interface Savable
+    public interface ISavable
     {
         void JSOnSave();
     }

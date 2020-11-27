@@ -36,11 +36,17 @@ namespace JustSave
         string fileName;
         string fileEnding;
 
+        /// <summary>
+        /// call this method to save everything. Automatically assembles a save file and saves it.
+        /// </summary>
         public void Save()
         {
             Debug.Log("Saving...");
         }
 
+        /// <summary>
+        /// call this method to load everything.
+        /// </summary>
         public void Load()
         {
             Debug.Log("Loading...");

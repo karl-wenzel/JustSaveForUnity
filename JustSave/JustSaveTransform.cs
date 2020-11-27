@@ -4,6 +4,5 @@ using UnityEngine;
 
 public class JustSaveTransform : MonoBehaviour
 {
-    [Savable("x")]
     float x = 0;
 }

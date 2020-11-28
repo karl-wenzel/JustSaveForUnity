@@ -16,6 +16,11 @@ namespace JustSave
             this.b = b;
             this.c = c;
         }
+
+        public override string ToString()
+        {
+            return "JSTriple: " + a + ", " + b + ", " + c;
+        }
     }
 
 }

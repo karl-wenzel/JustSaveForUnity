@@ -16,7 +16,7 @@ namespace JustSave
         /// </summary>
         /// <param name="save">the content of the save</param>
         /// <param name="path">the path to save to</param>
-        /// <returns>true if the saving was sucessfull, false if an error occured</returns>
+        /// <returns>true if the saving was successfull, false if an error occured</returns>
         public bool SaveFile(Save save, string path)
         {
             try

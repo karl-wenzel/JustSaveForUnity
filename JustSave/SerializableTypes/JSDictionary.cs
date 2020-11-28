@@ -5,15 +5,22 @@ using UnityEngine;
 namespace JustSave
 {
     [Serializable]
-    public class JSDictionary<T> where T : JSSerializable
+    public class JSDictionary<T> : JSSerializable where T : JSSerializable
     {
         Dictionary<string, T> savedValues;
 
+        /// <summary>
+        /// create a new empty serializable dictionary
+        /// </summary>
         public JSDictionary()
         {
             savedValues = new Dictionary<string, T>();
         }
 
+        /// <summary>
+        /// creates a new serializable dictionary
+        /// </summary>
+        /// <param name="startDict">a predefined dictionary to include. The JSDictionary will include a deep copy of it.</param>
         public JSDictionary(Dictionary<string, T> startDict)
         {
             //creating a deep copy
@@ -27,7 +34,7 @@ namespace JustSave
         /// <param name="key">the key to save the value</param>
         /// <param name="value">the value to be saved</param>
         /// <returns></returns>
-        public bool AddOrReplaceIntegerByKey(string key, T value)
+        public bool AddOrReplaceValueByKey(string key, T value)
         {
             if (savedValues.ContainsKey(key))
             {
@@ -41,7 +48,12 @@ namespace JustSave
             }
         }
 
-        public bool RemoveIntegerByKey(string key)
+        /// <summary>
+        /// removes a value from the JSDictionary. True if a value was removed, else returns false.
+        /// </summary>
+        /// <param name="key">the key to search for.</param>
+        /// <returns>Returns true if a value was removed, else returns false.</returns>
+        public bool RemoveValueByKey(string key)
         {
             if (savedValues.ContainsKey(key))
             {

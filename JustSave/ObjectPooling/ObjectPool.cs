@@ -71,7 +71,7 @@ namespace JustSave
             {
                 Pool.Add(new PoolObjectInformation(Instantiate(SpawnPrefab.gameObject, transform), false));
                 Pool[i].ObjectReference.SetActive(false);
-                Pool[i].ObjectReference.GetComponent<JustSaveRuntimeId>().SetUp(i, this);
+                Pool[i].ObjectReference.GetComponent<JustSaveRuntimeId>().SetUp(i, this, SpawnPrefabId);
 
                 foreach (Savable mySavable in Pool[i].SavablesInObject)
                 {
@@ -157,6 +157,7 @@ namespace JustSave
         }
 
         public GameObject Spawn(GameObject PrefabToSpawn, Savable[] SavablesInObject, Vector3 Position) {
+            PrefabToSpawn.GetComponent<JustSaveRuntimeId>().Spawn();
             PrefabToSpawn.SetActive(true);
             PrefabToSpawn.transform.position = Position;
 

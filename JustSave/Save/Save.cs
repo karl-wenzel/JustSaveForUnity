@@ -15,19 +15,19 @@ namespace JustSave
     {
         
         JSDictionary<JSDictionary<JSSerializable>> Savedata;
-        public readonly JSDictionary<JSSerializable> Spawning;
-        public readonly JSDictionary<JSSerializable> Autosaves;
+        public readonly JSDictionary<JSSerializable> Runtime;
+        public readonly JSDictionary<JSSerializable> Static;
 
         public Save() {
             Savedata = new JSDictionary<JSDictionary<JSSerializable>>();
 
             //this Dictionary will store all the information, about where pooled objects have been spawned
-            Savedata.AddOrReplaceValueByKey("Spawning", new JSDictionary<JSSerializable>());
-            Spawning = Savedata.GetValueByKey("Spawning");
+            Savedata.AddOrReplaceValueByKey("Runtime", new JSDictionary<JSSerializable>());
+            Runtime = Savedata.GetValueByKey("Runtime");
 
             //this Dictionary will store all the object-specific information, it will get the fields marked "autosave" and map them to an object identifier
-            Savedata.AddOrReplaceValueByKey("Autosaves", new JSDictionary<JSSerializable>());
-            Autosaves = Savedata.GetValueByKey("Autosaves");
+            Savedata.AddOrReplaceValueByKey("Static", new JSDictionary<JSSerializable>());
+            Static = Savedata.GetValueByKey("Static");
 
         }
     }

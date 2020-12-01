@@ -38,14 +38,43 @@ namespace JustSave
                 else {
                     JSSceneObjects.Add(IdObj as JustSaveSceneId);
                 }
+                GetAutosaveFields(IdObj);
             }
-            //TODO: continue working on this code
-            //System.Attribute.GetCustomAttributes(JSRuntimeObjects[0]);
-            //JSRuntimeObjects[0]
-            
 
             return newSave;
         }
+
+
+        public void GetAutosaveFields(JustSaveId ObjectId)
+        {
+            Debug.Log("Getting Autosave Fields in " + ObjectId.gameObject.name);
+            GameObject Search = ObjectId.gameObject;
+            Component[] Components = ObjectId.GetComponentsInChildren<Component>();
+            List<System.Attribute> Attributes = new List<System.Attribute>();
+
+            //getting the attributes
+            foreach (Component m_Obj in Components)
+            {
+                Debug.Log("Checking Component " + m_Obj.GetType().Name);
+                object[] m_Attributes = m_Obj.GetType().GetCustomAttributes(typeof(Autosaved), true);
+                foreach (object m_Attribute in m_Attributes)
+                {
+                    Attributes.Add(m_Attribute as Autosaved);
+                }
+            }
+
+            Debug.Log("Got List of " + Attributes.Count + " Attributes");
+
+            //iterating over the Attributes
+            Autosaved m_Autosaved;
+            foreach (System.Attribute m_Attribute in Attributes)
+            {
+                Debug.Log("Found Attribute " + m_Attribute.GetType().Name);
+                m_Autosaved = (Autosaved)m_Attribute;
+                Debug.Log("Attribute Type: " + m_Autosaved.GetType().ToString());
+            }
+        }
     }
+
 
 }

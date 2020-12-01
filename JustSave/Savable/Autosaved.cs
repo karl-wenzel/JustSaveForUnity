@@ -7,11 +7,19 @@ namespace JustSave
 
     public class Autosaved : System.Attribute
     {
-        string id;
+        readonly string message;
 
-        public Autosaved(string id)
+        public string GetMessage() {
+            return message;
+        }
+
+        public Autosaved(string message)
         {
-            this.id = id;
+            this.message = message;
+        }
+
+        public Autosaved() {
+            this.message = "";
         }
     }
 

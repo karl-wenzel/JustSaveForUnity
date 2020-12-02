@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace JustSave
 {
-
+    [System.AttributeUsage(System.AttributeTargets.Field, AllowMultiple = false)]
     public class Autosaved : System.Attribute
     {
         readonly string message;

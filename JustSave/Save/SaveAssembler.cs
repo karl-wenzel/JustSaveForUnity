@@ -22,25 +22,21 @@ namespace JustSave
             JSDictionary<JSSerializable> Runtime = newSave.Runtime;
             JSDictionary<JSSerializable> Static = newSave.Static;
 
-            Runtime.AddOrReplaceValueByKey("lol", new JSTriple(0, 0, 0));
-
-
-
             JustSaveId[] JSManagedObjects = Object.FindObjectsOfType<JustSaveId>();
 
-            List<JustSaveRuntimeId> JSRuntimeObjects = new List<JustSaveRuntimeId>();
-            List<JustSaveSceneId> JSSceneObjects = new List<JustSaveSceneId>();
+            bool IsRuntime;
+
             foreach (JustSaveId IdObj in JSManagedObjects)
             {
                 //its either a JustSaveRuntime Id
                 if (IdObj is JustSaveRuntimeId)
                 {
-                    JSRuntimeObjects.Add(IdObj as JustSaveRuntimeId);
+                    IsRuntime = true;
                 }
                 //or a SceneId
                 else
                 {
-                    JSSceneObjects.Add(IdObj as JustSaveSceneId);
+                    IsRuntime = false;
                 }
                 Debug.Log("Getting Autosave Fields in " + IdObj.gameObject.name);
                 GameObject Search = IdObj.gameObject;
@@ -65,11 +61,43 @@ namespace JustSave
 
                             if (AutosaveFieldType == typeof(int))
                             {
-                                SaveValue(newSave, true, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, new JSSingle((int)Field.GetValue(m_Comp as object)));
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
+                                    new JSInt((int)Field.GetValue(m_Comp as object)));
+                            }
+                            else if (AutosaveFieldType == typeof(float))
+                            {
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
+                                    JSFloat.GetJSFloat((float)Field.GetValue(m_Comp as object)));
                             }
                             else if (AutosaveFieldType == typeof(Vector3))
                             {
-                                //do sth
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
+                                    JSTriple.GetJSTriple((Vector3)Field.GetValue(m_Comp as object)));
+                            }
+                            else if (AutosaveFieldType == typeof(Vector2))
+                            {
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
+                                    JSNTuple.GetFromVector2((Vector2)Field.GetValue(m_Comp as object)));
+                            }
+                            else if (AutosaveFieldType == typeof(Vector4))
+                            {
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
+                                    JSNTuple.GetFromVector4((Vector4)Field.GetValue(m_Comp as object)));
+                            }
+                            else if (AutosaveFieldType == typeof(Quaternion))
+                            {
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
+                                    JSNTuple.GetFromQuaternion((Quaternion)Field.GetValue(m_Comp as object)));
+                            }
+                            else if (AutosaveFieldType == typeof(string))
+                            {
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
+                                    JSBasic.GetFromObject(Field.GetValue(m_Comp as object)));
+                            }
+                            else if (AutosaveFieldType is System.Runtime.Serialization.ISerializable)
+                            {
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
+                                    JSBasic.GetFromObject(Field.GetValue(m_Comp as object)));
                             }
                         }
                     }
@@ -88,7 +116,8 @@ namespace JustSave
         /// <param name="ComponentIdentifier">The Identifier of the Component from which this field will be saved</param>
         /// <param name="FieldName">The Name of the Field from which the value was extracted</param>
         /// <param name="Value">The Value to save. Must derive from JSSerializable</param>
-        public void SaveValue(Save save,bool Runtime, string ObjectIdentifier, string ComponentIdentifier, string FieldName, JSSerializable Value) {
+        public void SaveValue(Save save, bool Runtime, string ObjectIdentifier, string ComponentIdentifier, string FieldName, JSSerializable Value)
+        {
             JSDictionary<JSSerializable> ToSave = Runtime ? save.Runtime : save.Static;
 
             //following the path through the Savefile, creating additional Entries if necessary, then adding or replacing the value to the field name

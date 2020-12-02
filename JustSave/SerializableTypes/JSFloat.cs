@@ -18,7 +18,7 @@ namespace JustSave
             return a;
         }
 
-        public static JSFloat GetJSSingle(float a)
+        public static JSFloat GetJSFloat(float a)
         {
             return new JSFloat(a);
         }

@@ -95,6 +95,7 @@ namespace JustSave
         {
             Debug.Log("Loading...");
             Save loadedSave = myFileManager.LoadFile(path + fileName + fileEnding);
+            Debug.Log(loadedSave.ToString());
             if (loadedSave != null)
             {
                 Debug.Log(loadedSave.Runtime.GetValueByKey("lol"));

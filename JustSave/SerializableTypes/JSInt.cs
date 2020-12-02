@@ -4,11 +4,11 @@ using JustSave;
 namespace JustSave
 {
     [Serializable]
-    public class JSSingle : JSSerializable
+    public class JSInt : JSSerializable
     {
         int a;
 
-        public JSSingle(int a)
+        public JSInt(int a)
         {
             this.a = a;
         }
@@ -17,8 +17,8 @@ namespace JustSave
             return a;
         }
 
-        public static JSSingle GetJSSingle(int a) {
-            return new JSSingle(a);
+        public static JSInt GetJSSingle(int a) {
+            return new JSInt(a);
         }
 
         public override string ToString()

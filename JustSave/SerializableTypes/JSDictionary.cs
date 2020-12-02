@@ -84,6 +84,24 @@ namespace JustSave
                 return null;
             }
         }
+
+        /// <summary>
+        /// tries to get the value associated with a key. If no value was found, creates a new Dictionary as value
+        /// </summary>
+        /// <param name="key">the key associated with the wanted value</param>
+        /// <returns>value of type T or null, if the key is no associated with any value</returns>
+        public T GetOrCreateValueByKey(string key)
+        {
+            if (savedValues.ContainsKey(key))
+            {
+                return savedValues[key];
+            }
+            else
+            {
+                savedValues.Add(key, new JSDictionary<JSSerializable>() as T);
+                return GetValueByKey(key);
+            }
+        }
     }
 
 }

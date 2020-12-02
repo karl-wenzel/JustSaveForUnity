@@ -8,7 +8,7 @@ namespace JustSave
 
     public class JustSaveSceneId : JustSaveId
     {
-        private string id;
+        private string id = "_NOTDEFINED_";
 
         //secondary Id in the rare case, that 2 scene objects are at the exact same position
         private string secId;
@@ -17,6 +17,11 @@ namespace JustSave
         {
             id = gameObject.GetComponent<Transform>().position.x + gameObject.GetComponent<Transform>().position.y + gameObject.GetComponent<Transform>().position.z + "";
             secId = gameObject.name;
+        }
+
+        public override string GetSaveIdentifier()
+        {
+            return id;
         }
 
         /// <summary>

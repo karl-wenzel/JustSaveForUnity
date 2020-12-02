@@ -6,6 +6,7 @@ namespace JustSave
 {
     public abstract class JustSaveId : MonoBehaviour
     {
+        public abstract string GetSaveIdentifier();
     }
 
 }

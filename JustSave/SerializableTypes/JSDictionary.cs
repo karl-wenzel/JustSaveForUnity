@@ -102,6 +102,28 @@ namespace JustSave
                 return GetValueByKey(key);
             }
         }
+
+        /// <summary>
+        /// Creates the dictionary as a string representation
+        /// </summary>
+        /// <returns>a string representation of the dictionary</returns>
+        public override string ToString()
+        {
+            string result = "";
+            foreach (String key in savedValues.Keys)
+            {
+                try
+                {
+                    result = result + key + ": " + GetValueByKey(key).ToString() + "; ";
+                }
+                catch (Exception)
+                {
+                    Debug.LogError("An error occured while getting value to key: " + key);
+                    throw;
+                }
+            }
+            return result;
+        }
     }
 
 }

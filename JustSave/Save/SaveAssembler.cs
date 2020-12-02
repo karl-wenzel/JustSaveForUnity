@@ -65,7 +65,7 @@ namespace JustSave
 
                             if (AutosaveFieldType == typeof(int))
                             {
-                                Debug.Log("This is a int");
+                                SaveValue(newSave, true, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, new JSSingle((int)Field.GetValue(m_Comp as object)));
                             }
                             else if (AutosaveFieldType == typeof(Vector3))
                             {
@@ -75,6 +75,7 @@ namespace JustSave
                     }
                 }
             }
+            Debug.Log(newSave.ToString());
             return newSave;
         }
 

@@ -30,5 +30,10 @@ namespace JustSave
             Static = Savedata.GetValueByKey("Static");
 
         }
+
+        public override string ToString()
+        {
+            return Savedata.ToString();
+        }
     }
 }

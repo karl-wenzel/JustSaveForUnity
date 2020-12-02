@@ -18,6 +18,15 @@ namespace JustSave
             return id;
         }
 
+        public string GetPrefabId() {
+            return PrefabId;
+        }
+
+        public override string GetSaveIdentifier()
+        {
+            return GetPrefabId() + "_" + id.ToString();
+        }
+
         /// <summary>
         /// call this when spawning the Prefab with this RuntimeId, to make sure, it will get saved later
         /// </summary>

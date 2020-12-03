@@ -110,6 +110,7 @@ namespace JustSave
         public void Despawn(PoolObjectInformation PoolObject) {
             PoolObject.ObjectReference.SetActive(false);
             PoolObject.SetSpawned(false);
+            PoolObject.ObjectReference.transform.position = Vector3.zero;
         }
 
         public int GetPoolSize() {
@@ -158,8 +159,8 @@ namespace JustSave
 
         public GameObject Spawn(GameObject PrefabToSpawn, Savable[] SavablesInObject, Vector3 Position) {
             PrefabToSpawn.GetComponent<JustSaveRuntimeId>().Spawn();
-            PrefabToSpawn.SetActive(true);
             PrefabToSpawn.transform.position = Position;
+            PrefabToSpawn.SetActive(true);
 
             //calling JSOnSpawned() on every Savable in the Prefab
             foreach (Savable mySavable in SavablesInObject)

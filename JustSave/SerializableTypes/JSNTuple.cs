@@ -69,6 +69,16 @@ namespace JustSave
         {
             return new JSNTuple(input.x, input.y, input.z, input.w);
         }
+
+        public override string ToString()
+        {
+            string result = "JSNTuple: ";
+            foreach (float value in fields)
+            {
+                result = result + value + ", ";
+            }
+            return result;
+        }
     }
 
 }

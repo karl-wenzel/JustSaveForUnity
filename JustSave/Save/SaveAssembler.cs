@@ -39,23 +39,24 @@ namespace JustSave
                 {
                     IsRuntime = false;
                 }
-                Debug.Log("Getting Autosave Fields in " + IdObj.gameObject.name);
                 GameObject Search = IdObj.gameObject;
                 Component[] Components = Search.GetComponentsInChildren<Component>();
                 List<Attribute> Attributes = new List<Attribute>();
 
-                Debug.Log("Checking " + Components.Length + " Components in " + IdObj.gameObject.name);
                 //getting the attributes
                 foreach (Component m_Comp in Components)
                 {
+                    //calling JSOnSave on every class implementing the ISavable interface
+                    if (m_Comp is ISavable) {
+                        ((ISavable)m_Comp).JSOnSave();
+                    }
+
                     FieldInfo[] FieldInfos = m_Comp.GetType().GetFields();
 
                     foreach (FieldInfo Field in FieldInfos)
                     {
                         if (Attribute.IsDefined(Field, typeof(Autosaved)))
                         {
-                            Debug.Log("Found Savable Field: " + Field.Name + " in Component " + m_Comp.GetType().Name);
-                            Debug.Log("Field Has Type: " + Field.FieldType);
                             Type AutosaveFieldType = Field.FieldType;
 
                             // already serializable Types
@@ -79,6 +80,11 @@ namespace JustSave
                             {
                                 SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
                                     JSNTuple.GetFromVector4((Vector4)Field.GetValue(m_Comp)));
+                            }
+                            else if (AutosaveFieldType == typeof(Quaternion))
+                            {
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
+                                    JSNTuple.GetFromQuaternion((Quaternion)Field.GetValue(m_Comp)));
                             }
                             // no support
                             else {

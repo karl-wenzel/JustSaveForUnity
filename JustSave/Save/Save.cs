@@ -35,5 +35,9 @@ namespace JustSave
         {
             return Savedata.ToString();
         }
+
+        public JSDictionary<JSSerializable> GetByKey(string key) {
+            return Savedata.GetValueByKey(key);
+        }
     }
 }

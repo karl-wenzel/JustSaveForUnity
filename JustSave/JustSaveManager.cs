@@ -26,6 +26,7 @@ namespace JustSave
 
         FileManager myFileManager = new FileManager();
         SaveAssembler mySaveAssembler = new SaveAssembler();
+        SaveInterpreter mySaveInterpreter = new SaveInterpreter();
 
         //the object pooling manager can be acessed from elsewhere
         ObjectPoolingManager myObjectPoolingManager = new ObjectPoolingManager();
@@ -96,10 +97,8 @@ namespace JustSave
             Debug.Log("Loading...");
             Save loadedSave = myFileManager.LoadFile(path + fileName + fileEnding);
             Debug.Log(loadedSave.ToString());
-            if (loadedSave != null)
-            {
-                Debug.Log(loadedSave.Runtime.GetValueByKey("lol"));
-            }
+
+            mySaveInterpreter.InterpretSave(loadedSave);
         }
     }
 

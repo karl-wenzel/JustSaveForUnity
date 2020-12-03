@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using JustSave;
 using System.Reflection;
+using System;
 
 namespace JustSave
 {
@@ -22,7 +23,7 @@ namespace JustSave
             JSDictionary<JSSerializable> Runtime = newSave.Runtime;
             JSDictionary<JSSerializable> Static = newSave.Static;
 
-            JustSaveId[] JSManagedObjects = Object.FindObjectsOfType<JustSaveId>();
+            JustSaveId[] JSManagedObjects = UnityEngine.Object.FindObjectsOfType<JustSaveId>();
 
             bool IsRuntime;
 
@@ -41,7 +42,7 @@ namespace JustSave
                 Debug.Log("Getting Autosave Fields in " + IdObj.gameObject.name);
                 GameObject Search = IdObj.gameObject;
                 Component[] Components = Search.GetComponentsInChildren<Component>();
-                List<System.Attribute> Attributes = new List<System.Attribute>();
+                List<Attribute> Attributes = new List<Attribute>();
 
                 Debug.Log("Checking " + Components.Length + " Components in " + IdObj.gameObject.name);
                 //getting the attributes
@@ -51,53 +52,37 @@ namespace JustSave
 
                     foreach (FieldInfo Field in FieldInfos)
                     {
-                        if (System.Attribute.IsDefined(Field, typeof(Autosaved)))
+                        if (Attribute.IsDefined(Field, typeof(Autosaved)))
                         {
                             Debug.Log("Found Savable Field: " + Field.Name + " in Component " + m_Comp.GetType().Name);
                             Debug.Log("Field Has Type: " + Field.FieldType);
-                            System.Type AutosaveFieldType = Field.FieldType;
+                            Type AutosaveFieldType = Field.FieldType;
 
-                            System.Type[] SerializableTypes = { typeof(System.Int32) };
-
-                            if (AutosaveFieldType == typeof(int))
+                            // already serializable Types
+                            if (AutosaveFieldType.IsSerializable)
                             {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
-                                    new JSInt((int)Field.GetValue(m_Comp as object)));
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
+                                    JSBasic.GetFromObject(Field.GetValue(m_Comp)));
                             }
-                            else if (AutosaveFieldType == typeof(float))
+                            // support for unitys vector-types
+                            else if (AutosaveFieldType == typeof(Vector2))
                             {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
-                                    JSFloat.GetJSFloat((float)Field.GetValue(m_Comp as object)));
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
+                                    JSNTuple.GetFromVector2((Vector2)Field.GetValue(m_Comp)));
                             }
                             else if (AutosaveFieldType == typeof(Vector3))
                             {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
-                                    JSTriple.GetJSTriple((Vector3)Field.GetValue(m_Comp as object)));
-                            }
-                            else if (AutosaveFieldType == typeof(Vector2))
-                            {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
-                                    JSNTuple.GetFromVector2((Vector2)Field.GetValue(m_Comp as object)));
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
+                                    JSNTuple.GetFromVector3((Vector3)Field.GetValue(m_Comp)));
                             }
                             else if (AutosaveFieldType == typeof(Vector4))
                             {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
-                                    JSNTuple.GetFromVector4((Vector4)Field.GetValue(m_Comp as object)));
+                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
+                                    JSNTuple.GetFromVector4((Vector4)Field.GetValue(m_Comp)));
                             }
-                            else if (AutosaveFieldType == typeof(Quaternion))
-                            {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
-                                    JSNTuple.GetFromQuaternion((Quaternion)Field.GetValue(m_Comp as object)));
-                            }
-                            else if (AutosaveFieldType == typeof(string))
-                            {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
-                                    JSBasic.GetFromObject(Field.GetValue(m_Comp as object)));
-                            }
-                            else if (AutosaveFieldType is System.Runtime.Serialization.ISerializable)
-                            {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name, 
-                                    JSBasic.GetFromObject(Field.GetValue(m_Comp as object)));
+                            // no support
+                            else {
+                                Debug.LogWarning("Field " + Field.Name + " of Type " + AutosaveFieldType.Name + " is not serializable and will be skipped.");
                             }
                         }
                     }

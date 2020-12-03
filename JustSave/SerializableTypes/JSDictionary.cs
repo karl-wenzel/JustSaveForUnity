@@ -81,8 +81,29 @@ namespace JustSave
             else
             {
                 Debug.LogError("key " + key + " not found");
+                Debug.LogError("Available keys would be: ");
+
+                foreach (string debug_key in savedValues.Keys)
+                {
+                    Debug.LogError(debug_key);
+                }
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Returning the content of the JSDictionary in an array of the form of a Tuple with a string as the first value and the corresponding JSSerializable as the second value.
+        /// </summary>
+        /// <returns>The Tuple[]-representation of the JSDictionary</returns>
+        public Tuple<string, JSSerializable>[] GetValuePairs() {
+            Tuple<string, JSSerializable>[] result = new Tuple<string, JSSerializable>[savedValues.Keys.Count];
+            int i = 0;
+            foreach (string key in savedValues.Keys)
+            {
+                result[i] = new Tuple<string, JSSerializable>(key, GetValueByKey(key));
+                i++;
+            }
+            return result;
         }
 
         /// <summary>

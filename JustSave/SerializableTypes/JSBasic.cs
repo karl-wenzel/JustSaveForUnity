@@ -1,6 +1,5 @@
 ﻿using System;
 using JustSave;
-using System.Runtime.Serialization;
 
 namespace JustSave
 {
@@ -23,10 +22,7 @@ namespace JustSave
 
         public override string ToString()
         {
-            if (SerializableObject is string) {
-                return ((string)SerializableObject).ToString();
-            }
-            return base.ToString();
+            return SerializableObject.ToString();
         }
     }
 }

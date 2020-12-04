@@ -15,7 +15,7 @@ namespace JustSave
 
         public Vector2 GetVector2() {
             if (fields.Length < 2) {
-                Debug.LogError("JSNTuple has not enough fields to support Vector2. Returning default vector (0,0).");
+                if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("JSNTuple has not enough fields to support Vector2. Returning default vector (0,0).");
                 return new Vector2(0, 0);
             }
             return new Vector2(fields[0], fields[1]);
@@ -29,7 +29,7 @@ namespace JustSave
         {
             if (fields.Length < 3)
             {
-                Debug.LogError("JSNTuple has not enough fields to support Vector3. Returning default vector (0,0,0).");
+                if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("JSNTuple has not enough fields to support Vector3. Returning default vector (0,0,0).");
                 return new Vector3(0, 0, 0);
             }
             return new Vector3(fields[0], fields[1], fields[2]);
@@ -44,7 +44,7 @@ namespace JustSave
         {
             if (fields.Length < 4)
             {
-                Debug.LogError("JSNTuple has not enough fields to support Vector4. Returning default vector (0,0,0,0).");
+                if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("JSNTuple has not enough fields to support Vector4. Returning default vector (0,0,0,0).");
                 return new Vector4(0, 0, 0, 0);
             }
             return new Vector4(fields[0], fields[1], fields[2], fields[3]);
@@ -59,7 +59,7 @@ namespace JustSave
         {
             if (fields.Length < 4)
             {
-                Debug.LogError("JSNTuple has not enough fields to support Quaternion. Returning identity.");
+                if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("JSNTuple has not enough fields to support Quaternion. Returning identity.");
                 return Quaternion.identity;
             }
             return new Quaternion(fields[0], fields[1], fields[2], fields[3]);

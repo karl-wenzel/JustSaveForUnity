@@ -1,9 +1,11 @@
-﻿using System.Collections;
+﻿
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace JustSave
 {
+
 
 
     /// <summary>
@@ -24,25 +26,26 @@ namespace JustSave
     {
         public static readonly JustSaveManager Instance = new JustSaveManager();
 
-        FileManager myFileManager = new FileManager(false);
-        SaveAssembler mySaveAssembler = new SaveAssembler(false);
-        SaveInterpreter mySaveInterpreter = new SaveInterpreter(false);
+        FileManager myFileManager = new FileManager();
+        SaveAssembler mySaveAssembler = new SaveAssembler();
+        SaveInterpreter mySaveInterpreter = new SaveInterpreter();
 
         //the object pooling manager can be acessed from elsewhere
         ObjectPoolingManager myObjectPoolingManager = new ObjectPoolingManager();
 
-        public ObjectPoolingManager GetObjectPoolingManager() {
+        public ObjectPoolingManager GetObjectPoolingManager()
+        {
             return myObjectPoolingManager;
         }
 
-        public void ToggleDebugMode(bool On) {
-            mySaveAssembler = new SaveAssembler(On);
-            mySaveInterpreter = new SaveInterpreter(On);
-            myFileManager = new FileManager(On);
+        public void ToggleDebugMode(DebugMode Mode)
+        {
+            Dbug.GlobalLevel = Mode;
         }
 
         //constructor
-        private JustSaveManager() {
+        private JustSaveManager()
+        {
             //default values for path, filename and fileending
             path = Application.persistentDataPath + "/";
             fileName = "default";
@@ -59,7 +62,8 @@ namespace JustSave
         /// <param name="PrefabId">The Id of the prefab to be spawned. Id should match the Id of some object pool.</param>
         /// <param name="Position">The position at which the prefab shall be spawned</param>
         /// <returns>The Gameobject, that was spawned or null, if no Gameobject could be spawned</returns>
-        public GameObject Spawn(string PrefabId, Vector3 Position) {
+        public GameObject Spawn(string PrefabId, Vector3 Position)
+        {
             return myObjectPoolingManager.Spawn(PrefabId, Position);
         }
 
@@ -71,7 +75,8 @@ namespace JustSave
         /// <param name="BasePoolSize">The base size to which the pool should be filled</param>
         /// /// <param name="UseForceSpawning">When set to true, the pool will automatically despawn old objects when no more objects are available</param>
         /// <returns></returns>
-        public ObjectPool CreateObjectPool(GameObject PrefabToSpawn, string PrefabId, int BasePoolSize, bool UseForceSpawning) {
+        public ObjectPool CreateObjectPool(GameObject PrefabToSpawn, string PrefabId, int BasePoolSize, bool UseForceSpawning)
+        {
             if (BasePoolSize < 0 || PrefabId == null || PrefabId == "") return null;
             GameObject newPool = new GameObject("ObjectPoolFor" + PrefabToSpawn, typeof(ObjectPool));
             ObjectPool newPoolComponent = newPool.GetComponent<ObjectPool>();
@@ -90,9 +95,27 @@ namespace JustSave
         /// </summary>
         public void Save()
         {
-            Debug.Log("Saving...");
+            if (Dbug.Is(DebugMode.INFO)) Debug.Log("Saving...");
             Save newSave = mySaveAssembler.GetCurrentSave();
-            if (myFileManager.SaveFile(newSave, path + fileName + fileEnding)) Debug.Log("File saved successfully");
+            if (myFileManager.SaveFile(newSave, path + fileName + fileEnding) && Dbug.Is(DebugMode.INFO)) Debug.Log("File saved successfully");
+        }
+
+        /// <summary>
+        /// call this to get a Save-file representing the current gamestate, without really saving anything to the hard drive
+        /// </summary>
+        /// <returns>A save-representation of the current state</returns>
+        public Save GetSaveFromCurrentState()
+        {
+            return mySaveAssembler.GetCurrentSave();
+        }
+
+        /// <summary>
+        /// interpret a given save and apply it to the application
+        /// </summary>
+        /// <param name="source">the save to interpret</param>
+        public void InterpretThisSave(Save source)
+        {
+            mySaveInterpreter.InterpretSave(source);
         }
 
         /// <summary>
@@ -100,10 +123,13 @@ namespace JustSave
         /// </summary>
         public void Load()
         {
-            Debug.Log("Loading...");
+            if (Dbug.Is(DebugMode.INFO)) Debug.Log("Loading...");
             Save loadedSave = myFileManager.LoadFile(path + fileName + fileEnding);
-            Debug.Log(loadedSave.ToString());
-
+            if (Dbug.Is(DebugMode.DEBUG))
+            {
+                Debug.Log("Save to load: " + loadedSave.ToString());
+                Debug.Log("Shortform: " + loadedSave.ToShortString());
+            }
             mySaveInterpreter.InterpretSave(loadedSave);
         }
     }

@@ -12,31 +12,32 @@ namespace JustSave
     public abstract class Savable : MonoBehaviour, ISavable
     {
         [Header("Savable Settings:")]
+        [Tooltip("Set this to true, if you want to receive Debug messages every time this object is called by the JustSave-System. Note, that your Saving System should also at least be in DebugMode.INFO")]
         public bool Debug = false;
 
         public virtual void JSOnSave() {
-            if (Debug) print("Object " + name + " has been saved.");
+            if (Dbug.Is(DebugMode.INFO) && Debug) print("Object " + name + " has been saved.");
         }
 
         public virtual void JSOnSpawned() {
-            if (Debug) print("Object " + name + " has been spawend at " + transform.position + ".");
+            if (Dbug.Is(DebugMode.INFO) && Debug) print("Object " + name + " has been spawend at " + transform.position + ".");
         }
 
         public virtual void JSOnDespawned()
         {
-            if (Debug) print("Object " + name + " has been despawend. Returning to pool.");
+            if (Dbug.Is(DebugMode.INFO) && Debug) print("Object " + name + " has been despawend. Returning to pool.");
         }
 
         public virtual void JSOnLoad() {
-            if (Debug) print("Object " + name + " has been loaded.");
+            if (Dbug.Is(DebugMode.INFO) && Debug) print("Object " + name + " has been loaded.");
         }
 
         public virtual void JSOnPooled() {
-            if (Debug) print("Object " + name + " has been pooled.");
+            if (Dbug.Is(DebugMode.INFO) && Debug) print("Object " + name + " has been pooled.");
         }
 
         public void JSDespawn() {
-            if (Debug) print("Calling " + name + " to despawn itself.");
+            if (Dbug.Is(DebugMode.INFO) && Debug) print("Calling " + name + " to despawn itself.");
         }
     }
 

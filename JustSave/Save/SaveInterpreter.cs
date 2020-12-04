@@ -12,12 +12,6 @@ namespace JustSave
     /// </summary>
     public class SaveInterpreter
     {
-        public bool DebugThis;
-
-        public SaveInterpreter(bool DebugThis)
-        {
-            this.DebugThis = DebugThis;
-        }
 
         /// <summary>
         /// Interprets a given save and applies the data to the Application
@@ -64,6 +58,11 @@ namespace JustSave
                 JustSaveRuntimeId spawnedIdObj = spawnedPrefab.GetComponent<JustSaveRuntimeId>();
                 spawnedIdObj.SetId(Guid.Parse(idInfo[1]));
                 SyncObject(source, true, spawnedPrefab.GetComponent<JustSaveRuntimeId>(), RememberedFields);
+            }
+
+            if (Dbug.Is(DebugMode.DEBUG))
+            {
+                Debug.Log("Save Interpreter finished loading Save");
             }
 
             return true;
@@ -145,6 +144,11 @@ namespace JustSave
             result = ((JSDictionary<JSSerializable>)((JSDictionary<JSSerializable>)save.GetByKey(Runtime ? "Runtime" : "Static")
                 .GetValueByKey(ObjectIdentifier)).GetValueByKey(ComponentIdentifier)).GetValueByKey(FieldName);
 
+            if (result == null)
+            {
+                if (Dbug.Is(DebugMode.WARN)) Debug.LogWarning("There was a problem getting a value for the Autosave field at: "
+                    + ObjectIdentifier + " " + ComponentIdentifier + " " + FieldName);
+            }
             return result;
         }
     }

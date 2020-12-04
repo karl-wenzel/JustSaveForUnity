@@ -46,11 +46,14 @@ namespace JustSave
                     return myPoolKey.pool.Spawn(Position);
                 }
             }
-            Debug.LogWarning("The ObjectPoolingManager found no ObjectPool corresponding to the id: " + PrefabId);
-            Debug.LogWarning("List of all registered ObjectPools:");
-            foreach (PoolKey myPoolKey in ObjectPoolingList)
+            if (Dbug.Is(DebugMode.ERROR))
             {
-                Debug.LogWarning(myPoolKey.key);
+                Debug.LogWarning("The ObjectPoolingManager found no ObjectPool corresponding to the id: " + PrefabId);
+                Debug.LogWarning("List of all registered ObjectPools:");
+                foreach (PoolKey myPoolKey in ObjectPoolingList)
+                {
+                    Debug.LogWarning(myPoolKey.key);
+                }
             }
             return null;
         }

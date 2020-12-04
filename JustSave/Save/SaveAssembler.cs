@@ -11,12 +11,6 @@ namespace JustSave
 
     public class SaveAssembler
     {
-        
-        bool DebugThis;
-
-        public SaveAssembler(bool DebugThis) {
-            this.DebugThis = DebugThis;
-        }
 
         /// <summary>
         /// assembles a new JustSave.Save from the current application and returns this Save.
@@ -61,11 +55,13 @@ namespace JustSave
                 foreach (Component m_Comp in Components)
                 {
                     //calling JSOnSave on every class implementing the ISavable interface
-                    if (m_Comp is ISavable) {
+                    if (m_Comp is ISavable)
+                    {
                         ((ISavable)m_Comp).JSOnSave();
                     }
 
-                    if (!RememberedFields.TryGetValue(m_Comp.GetType(), out FieldInfos)) {
+                    if (!RememberedFields.TryGetValue(m_Comp.GetType(), out FieldInfos))
+                    {
                         FieldInfos = m_Comp.GetType().GetFields();
                         RememberedFields.Add(m_Comp.GetType(), FieldInfos);
                     }
@@ -104,25 +100,30 @@ namespace JustSave
                                     JSNTuple.GetFromQuaternion((Quaternion)Field.GetValue(m_Comp))))) OverwriteCounter++;
                             }
                             // no support
-                            else {
-                                if (DebugThis) Debug.LogWarning("Field " + Field.Name + " of Type " + AutosaveFieldType.Name + " is not serializable and will be skipped.");
+                            else
+                            {
+                                if (Dbug.Is(DebugMode.WARN)) Debug.LogWarning("Field " + Field.Name + " of Type " + AutosaveFieldType.Name + " is not serializable and will be skipped.");
                             }
                         }
                     }
                 }
             }
-            if (DebugThis) {
+            if (Dbug.Is(DebugMode.DEBUG))
+            {
                 Debug.Log("______Assembled Save______");
                 Debug.Log(newSave.ToString());
                 Debug.Log("__________________________");
                 Debug.Log("______Short Form Save______");
                 Debug.Log(newSave.ToShortString());
                 Debug.Log("__________________________");
-                if (OverwriteCounter == 0) Debug.Log("Overwritten: " + OverwriteCounter + " Fields. If this number is greater than 0, you should look into this.");
-                else Debug.LogWarning("Overwritten: " + OverwriteCounter + " Fields. If this number is greater than 0, you should look into this.");
                 Debug.Log("Scanned a total of " + RememberedFields.Keys.Count + " different classes.");
+                Debug.Log("Overwritten: " + OverwriteCounter + " Fields. Perfect!");
             }
-            
+            if (OverwriteCounter > 0 && Dbug.Is(DebugMode.WARN))
+            {
+                Debug.LogWarning("Overwritten: " + OverwriteCounter + " Fields. You should look into this.");
+            }
+
             return newSave;
         }
 

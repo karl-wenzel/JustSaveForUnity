@@ -80,12 +80,15 @@ namespace JustSave
             }
             else
             {
-                Debug.LogError("key " + key + " not found");
-                Debug.LogError("Available keys would be: ");
-
-                foreach (string debug_key in savedValues.Keys)
+                if (Dbug.Is(DebugMode.ERROR))
                 {
-                    Debug.LogError(debug_key);
+                    Debug.LogError("key " + key + " not found");
+                    Debug.LogError("Available keys would be: ");
+
+                    foreach (string debug_key in savedValues.Keys)
+                    {
+                        Debug.LogError(debug_key);
+                    }
                 }
                 return null;
             }
@@ -141,7 +144,7 @@ namespace JustSave
                 }
                 catch (Exception)
                 {
-                    Debug.LogError("An error occured while getting value to key: " + key + ". Could Therefore not print JSDictionary to console.");
+                    if (Dbug.Is(DebugMode.WARN)) Debug.LogError("An error occured while getting value to key: " + key + ". Could Therefore not print JSDictionary to console.");
                     throw;
                 }
             }
@@ -156,11 +159,11 @@ namespace JustSave
             {
                 try
                 {
-                    result = result + (key.Length <= 20 ? key.Split('_')[0] : key.Substring(0, 20).Split('_')[0]) + ((GetValueByKey(key) is JSDictionary<JSSerializable>) ? "(" + (GetValueByKey(key) as JSDictionary<JSSerializable>).ToShortString()+") " : "") + " ";
+                    result = result + (key.Length <= 20 ? key.Split('_')[0].Replace("JustSave","") : key.Substring(0, 20).Split('_')[0]).Replace("JustSave", "") + ((GetValueByKey(key) is JSDictionary<JSSerializable>) ? "(" + (GetValueByKey(key) as JSDictionary<JSSerializable>).ToShortString()+") " : "") + " ";
                 }
                 catch (Exception)
                 {
-                    Debug.LogError("An error occured while getting value to key: " + key + ". Could Therefore not print JSDictionary to console.");
+                    if (Dbug.Is(DebugMode.WARN)) Debug.LogError("An error occured while getting value to key: " + key + ". Could Therefore not print JSDictionary to console.");
                     throw;
                 }
             }

@@ -7,11 +7,18 @@ using JustSave;
 [RequireComponent(typeof(UnityEngine.Transform))]
 public class JustSaveTransform : Savable
 {
-    [Autosaved] [HideInInspector]
+    [Header("JustSaveTransform Settings")]
+    [Tooltip("Set this to true, if you have rigidbodies on this Object. It will reset the velocity of this rigidbodies when loading." +
+        " If you want to save the velocity, use the JustSaveRigidbody component and set this to false.")]
+    public bool ResetRigidbody = true;
+    [Autosaved]
+    [HideInInspector]
     public Vector3 Position;
-    [Autosaved] [HideInInspector]
+    [Autosaved]
+    [HideInInspector]
     public Quaternion Rotation;
-    [Autosaved] [HideInInspector]
+    [Autosaved]
+    [HideInInspector]
     public Vector3 Scale;
 
     public override void JSOnSave()
@@ -28,5 +35,14 @@ public class JustSaveTransform : Savable
         transform.position = Position;
         transform.rotation = Rotation;
         transform.localScale = Scale;
+        if (ResetRigidbody)
+        {
+            Rigidbody[] RbOnThis = gameObject.GetComponentsInChildren<Rigidbody>();
+            foreach (Rigidbody Rb in RbOnThis)
+            {
+                Rb.velocity = Vector3.zero;
+                Rb.angularVelocity = Vector3.zero;
+            }
+        }
     }
 }

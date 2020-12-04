@@ -25,8 +25,6 @@ namespace JustSave
         /// <returns>True if the method reached the end of the calculation without fatal errors</returns>
         public bool InterpretSave(Save source)
         {
-            JustSaveRuntimeId.IDLIST.Clear();
-
             //getting references to spawning and autosaves
             JSDictionary<JSSerializable> Runtime = source.Runtime;
             JSDictionary<JSSerializable> Static = source.Static;

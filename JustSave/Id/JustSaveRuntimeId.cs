@@ -6,7 +6,6 @@ namespace JustSave
 {
     public class JustSaveRuntimeId : JustSaveId
     {
-        public static List<Guid> IDLIST = new List<Guid>();
         Guid id;
         ObjectPool ObjectPoolReference;
         int ObjectPoolIndex;
@@ -15,10 +14,6 @@ namespace JustSave
 
         public void SetId(Guid newId) {
             id = newId;
-            if (IDLIST.Contains(newId)) {
-                Debug.LogError("Id " + newId.ToString() + " doppelt!");
-            }
-            IDLIST.Add(newId);
         }
 
         public Guid GetId() {
@@ -35,14 +30,15 @@ namespace JustSave
         }
 
         /// <summary>
-        /// call this when spawning the Prefab with this RuntimeId, to make sure, it will get saved later
+        /// called when spawning the Prefab with this RuntimeId, every time when it leaves the pool
         /// </summary>
         public void Spawn() {
             Spawned = true;
+            SetId(Guid.NewGuid());
         }
 
         /// <summary>
-        /// setting up the RuntimeId-Component (Should be called on Instantiation in the pool)
+        /// setting up the RuntimeId-Component (Is called on Instantiation in the pool)
         /// </summary>
         /// <param name="newIndex">Index in the object Pool</param>
         /// <param name="newPool">Reference To the object Pool</param>

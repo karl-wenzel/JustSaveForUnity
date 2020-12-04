@@ -13,7 +13,8 @@ namespace JustSave
     {
         public bool DebugThis;
 
-        public FileManager(bool DebugThis) {
+        public FileManager(bool DebugThis)
+        {
             this.DebugThis = DebugThis;
         }
 
@@ -66,7 +67,7 @@ namespace JustSave
                     return null;
                     throw;
                 }
-                
+
             }
             else
             {

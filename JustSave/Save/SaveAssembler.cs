@@ -29,6 +29,9 @@ namespace JustSave
 
             int OverwriteCounter = 0;
 
+            //use this dictionary to remember once scanned classes for later use
+            Dictionary<Type, FieldInfo[]> RememberedFields = new Dictionary<Type, FieldInfo[]>();
+
             //getting references to spawning and autosaves
             JSDictionary<JSSerializable> Runtime = newSave.Runtime;
             JSDictionary<JSSerializable> Static = newSave.Static;
@@ -53,6 +56,7 @@ namespace JustSave
                 Component[] Components = Search.GetComponentsInChildren<Component>();
                 List<Attribute> Attributes = new List<Attribute>();
 
+                FieldInfo[] FieldInfos;
                 //getting the attributes
                 foreach (Component m_Comp in Components)
                 {
@@ -61,7 +65,10 @@ namespace JustSave
                         ((ISavable)m_Comp).JSOnSave();
                     }
 
-                    FieldInfo[] FieldInfos = m_Comp.GetType().GetFields();
+                    if (!RememberedFields.TryGetValue(m_Comp.GetType(), out FieldInfos)) {
+                        FieldInfos = m_Comp.GetType().GetFields();
+                        RememberedFields.Add(m_Comp.GetType(), FieldInfos);
+                    }
 
                     foreach (FieldInfo Field in FieldInfos)
                     {
@@ -113,6 +120,7 @@ namespace JustSave
                 Debug.Log("__________________________");
                 if (OverwriteCounter == 0) Debug.Log("Overwritten: " + OverwriteCounter + " Fields. If this number is greater than 0, you should look into this.");
                 else Debug.LogWarning("Overwritten: " + OverwriteCounter + " Fields. If this number is greater than 0, you should look into this.");
+                Debug.Log("Scanned a total of " + RememberedFields.Keys.Count + " different classes.");
             }
             
             return newSave;

@@ -14,7 +14,8 @@ namespace JustSave
     {
         public bool DebugThis;
 
-        public SaveInterpreter(bool DebugThis) {
+        public SaveInterpreter(bool DebugThis)
+        {
             this.DebugThis = DebugThis;
         }
 
@@ -25,9 +26,13 @@ namespace JustSave
         /// <returns>True if the method reached the end of the calculation without fatal errors</returns>
         public bool InterpretSave(Save source)
         {
+            List<int> arrayList = new List<int>();
             //getting references to spawning and autosaves
             JSDictionary<JSSerializable> Runtime = source.Runtime;
             JSDictionary<JSSerializable> Static = source.Static;
+
+            //use this dictionary to remember once scanned classes for later use
+            Dictionary<Type, FieldInfo[]> RememberedFields = new Dictionary<Type, FieldInfo[]>();
 
             //preparing references and despawning runtime objects
             JustSaveId[] JSManagedObjects = UnityEngine.Object.FindObjectsOfType<JustSaveId>();
@@ -47,7 +52,7 @@ namespace JustSave
             //loading scene objects
             foreach (JustSaveSceneId IdObj in JSManagedSceneObjects)
             {
-                SyncObject(source, false, IdObj);
+                SyncObject(source, false, IdObj, RememberedFields);
             }
 
             //iterating through spawned objects
@@ -58,21 +63,28 @@ namespace JustSave
                 GameObject spawnedPrefab = JustSaveManager.Instance.Spawn(idInfo[0], Vector3.zero);
                 JustSaveRuntimeId spawnedIdObj = spawnedPrefab.GetComponent<JustSaveRuntimeId>();
                 spawnedIdObj.SetId(Guid.Parse(idInfo[1]));
-                SyncObject(source, true, spawnedPrefab.GetComponent<JustSaveRuntimeId>());
+                SyncObject(source, true, spawnedPrefab.GetComponent<JustSaveRuntimeId>(), RememberedFields);
             }
 
             return true;
         }
 
-        public void SyncObject(Save source, bool Runtime, JustSaveId IdObj) {
+        public void SyncObject(Save source, bool Runtime, JustSaveId IdObj, Dictionary<Type, FieldInfo[]> RememberedFields)
+        {
             GameObject Search = IdObj.gameObject;
             Component[] Components = Search.GetComponentsInChildren<Component>();
             List<Attribute> Attributes = new List<Attribute>();
 
+            FieldInfo[] FieldInfos;
+
             //getting the attributes
             foreach (Component m_Comp in Components)
             {
-                FieldInfo[] FieldInfos = m_Comp.GetType().GetFields();
+                if (!RememberedFields.TryGetValue(m_Comp.GetType(), out FieldInfos))
+                {
+                    FieldInfos = m_Comp.GetType().GetFields();
+                    RememberedFields.Add(m_Comp.GetType(), FieldInfos);
+                }
 
                 foreach (FieldInfo Field in FieldInfos)
                 {

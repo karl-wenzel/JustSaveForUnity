@@ -24,7 +24,7 @@ namespace JustSave
             {
                 BinaryFormatter myBinaryFormatter = new BinaryFormatter();
                 FileStream myFileStream = File.Create(path);
-                if (Dbug.Is(DebugMode.INFO)) Debug.Log("_JS: Saved to " + path);
+                if (Dbug.Is(DebugMode.INFO)) Debug.Log("Saved to " + path);
                 myBinaryFormatter.Serialize(myFileStream, save);
                 myFileStream.Close();
                 return true;

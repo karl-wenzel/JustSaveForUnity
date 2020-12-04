@@ -131,6 +131,8 @@ namespace JustSave
                 Debug.Log("Shortform: " + loadedSave.ToShortString());
             }
             mySaveInterpreter.InterpretSave(loadedSave);
+            if (Dbug.Is(DebugMode.INFO)) Debug.Log("File loaded.");
+
         }
     }
 

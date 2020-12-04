@@ -11,13 +11,23 @@ namespace JustSave
 
     public class SaveAssembler
     {
+        
+        bool DebugThis;
+
+        public SaveAssembler(bool DebugThis) {
+            this.DebugThis = DebugThis;
+        }
+
         /// <summary>
         /// assembles a new JustSave.Save from the current application and returns this Save.
         /// </summary>
         /// <returns>the assembled Save</returns>
+        /// 
         public Save GetCurrentSave()
         {
             Save newSave = new Save();
+
+            int OverwriteCounter = 0;
 
             //getting references to spawning and autosaves
             JSDictionary<JSSerializable> Runtime = newSave.Runtime;
@@ -62,39 +72,49 @@ namespace JustSave
                             // already serializable Types
                             if (AutosaveFieldType.IsSerializable)
                             {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
-                                    JSBasic.GetFromObject(Field.GetValue(m_Comp)));
+                                if (!(SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
+                                    JSBasic.GetFromObject(Field.GetValue(m_Comp))))) OverwriteCounter++;
                             }
                             // support for unitys vector-types
                             else if (AutosaveFieldType == typeof(Vector2))
                             {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
-                                    JSNTuple.GetFromVector2((Vector2)Field.GetValue(m_Comp)));
+                                if (!(SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
+                                    JSNTuple.GetFromVector2((Vector2)Field.GetValue(m_Comp))))) OverwriteCounter++;
                             }
                             else if (AutosaveFieldType == typeof(Vector3))
                             {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
-                                    JSNTuple.GetFromVector3((Vector3)Field.GetValue(m_Comp)));
+                                if (!(SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
+                                    JSNTuple.GetFromVector3((Vector3)Field.GetValue(m_Comp))))) OverwriteCounter++;
                             }
                             else if (AutosaveFieldType == typeof(Vector4))
                             {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
-                                    JSNTuple.GetFromVector4((Vector4)Field.GetValue(m_Comp)));
+                                if (!(SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
+                                    JSNTuple.GetFromVector4((Vector4)Field.GetValue(m_Comp))))) OverwriteCounter++;
                             }
                             else if (AutosaveFieldType == typeof(Quaternion))
                             {
-                                SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
-                                    JSNTuple.GetFromQuaternion((Quaternion)Field.GetValue(m_Comp)));
+                                if (!(SaveValue(newSave, IsRuntime, IdObj.GetSaveIdentifier(), m_Comp.GetType().Name, Field.Name,
+                                    JSNTuple.GetFromQuaternion((Quaternion)Field.GetValue(m_Comp))))) OverwriteCounter++;
                             }
                             // no support
                             else {
-                                Debug.LogWarning("Field " + Field.Name + " of Type " + AutosaveFieldType.Name + " is not serializable and will be skipped.");
+                                if (DebugThis) Debug.LogWarning("Field " + Field.Name + " of Type " + AutosaveFieldType.Name + " is not serializable and will be skipped.");
                             }
                         }
                     }
                 }
             }
-            Debug.Log(newSave.ToString());
+            if (DebugThis) {
+                Debug.Log("______Assembled Save______");
+                Debug.Log(newSave.ToString());
+                Debug.Log("__________________________");
+                Debug.Log("______Short Form Save______");
+                Debug.Log(newSave.ToShortString());
+                Debug.Log("__________________________");
+                if (OverwriteCounter == 0) Debug.Log("Overwritten: " + OverwriteCounter + " Fields. If this number is greater than 0, you should look into this.");
+                else Debug.LogWarning("Overwritten: " + OverwriteCounter + " Fields. If this number is greater than 0, you should look into this.");
+            }
+            
             return newSave;
         }
 
@@ -107,12 +127,12 @@ namespace JustSave
         /// <param name="ComponentIdentifier">The Identifier of the Component from which this field will be saved</param>
         /// <param name="FieldName">The Name of the Field from which the value was extracted</param>
         /// <param name="Value">The Value to save. Must derive from JSSerializable</param>
-        public void SaveValue(Save save, bool Runtime, string ObjectIdentifier, string ComponentIdentifier, string FieldName, JSSerializable Value)
+        public bool SaveValue(Save save, bool Runtime, string ObjectIdentifier, string ComponentIdentifier, string FieldName, JSSerializable Value)
         {
             JSDictionary<JSSerializable> ToSave = Runtime ? save.Runtime : save.Static;
 
             //following the path through the Savefile, creating additional Entries if necessary, then adding or replacing the value to the field name
-            ((JSDictionary<JSSerializable>)(((JSDictionary<JSSerializable>)(ToSave.GetOrCreateValueByKey(ObjectIdentifier)))
+            return ((JSDictionary<JSSerializable>)(((JSDictionary<JSSerializable>)(ToSave.GetOrCreateValueByKey(ObjectIdentifier)))
                 .GetOrCreateValueByKey(ComponentIdentifier))).AddOrReplaceValueByKey(FieldName, Value);
         }
     }

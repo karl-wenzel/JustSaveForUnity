@@ -24,15 +24,21 @@ namespace JustSave
     {
         public static readonly JustSaveManager Instance = new JustSaveManager();
 
-        FileManager myFileManager = new FileManager();
-        SaveAssembler mySaveAssembler = new SaveAssembler();
-        SaveInterpreter mySaveInterpreter = new SaveInterpreter();
+        FileManager myFileManager = new FileManager(false);
+        SaveAssembler mySaveAssembler = new SaveAssembler(false);
+        SaveInterpreter mySaveInterpreter = new SaveInterpreter(false);
 
         //the object pooling manager can be acessed from elsewhere
         ObjectPoolingManager myObjectPoolingManager = new ObjectPoolingManager();
 
         public ObjectPoolingManager GetObjectPoolingManager() {
             return myObjectPoolingManager;
+        }
+
+        public void ToggleDebugMode(bool On) {
+            mySaveAssembler = new SaveAssembler(On);
+            mySaveInterpreter = new SaveInterpreter(On);
+            myFileManager = new FileManager(On);
         }
 
         //constructor

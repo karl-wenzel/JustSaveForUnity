@@ -33,7 +33,7 @@ namespace JustSave
         /// </summary>
         /// <param name="key">the key to save the value</param>
         /// <param name="value">the value to be saved</param>
-        /// <returns></returns>
+        /// <returns>True, if no binding for this key existed and it was added. False, if a value was replaced. Use this to determine if you are overwriting values</returns>
         public bool AddOrReplaceValueByKey(string key, T value)
         {
             if (savedValues.ContainsKey(key))
@@ -131,6 +131,8 @@ namespace JustSave
         public override string ToString()
         {
             string result = "";
+            result = result + "Count: " + savedValues.Keys.Count + " ";
+
             foreach (String key in savedValues.Keys)
             {
                 try
@@ -139,7 +141,26 @@ namespace JustSave
                 }
                 catch (Exception)
                 {
-                    Debug.LogError("An error occured while getting value to key: " + key);
+                    Debug.LogError("An error occured while getting value to key: " + key + ". Could Therefore not print JSDictionary to console.");
+                    throw;
+                }
+            }
+            return result;
+        }
+
+        public string ToShortString() {
+            string result = "";
+            result = result + " " + (savedValues.Keys.Count>6 ? savedValues.Count+":" : "");
+
+            foreach (String key in savedValues.Keys)
+            {
+                try
+                {
+                    result = result + (key.Length <= 20 ? key.Split('_')[0] : key.Substring(0, 20).Split('_')[0]) + ((GetValueByKey(key) is JSDictionary<JSSerializable>) ? "(" + (GetValueByKey(key) as JSDictionary<JSSerializable>).ToShortString()+") " : "") + " ";
+                }
+                catch (Exception)
+                {
+                    Debug.LogError("An error occured while getting value to key: " + key + ". Could Therefore not print JSDictionary to console.");
                     throw;
                 }
             }

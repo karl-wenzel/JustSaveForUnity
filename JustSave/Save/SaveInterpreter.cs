@@ -12,8 +12,21 @@ namespace JustSave
     /// </summary>
     public class SaveInterpreter
     {
+        public bool DebugThis;
+
+        public SaveInterpreter(bool DebugThis) {
+            this.DebugThis = DebugThis;
+        }
+
+        /// <summary>
+        /// Interprets a given save and applies the data to the Application
+        /// </summary>
+        /// <param name="source">The save to interpret</param>
+        /// <returns>True if the method reached the end of the calculation without fatal errors</returns>
         public bool InterpretSave(Save source)
         {
+            JustSaveRuntimeId.IDLIST.Clear();
+
             //getting references to spawning and autosaves
             JSDictionary<JSSerializable> Runtime = source.Runtime;
             JSDictionary<JSSerializable> Static = source.Static;
@@ -40,9 +53,10 @@ namespace JustSave
             }
 
             //iterating through spawned objects
+            string[] idInfo = new string[2];
             foreach (Tuple<String, JSSerializable> RuntimeObjectInfo in Runtime.GetValuePairs())
             {
-                string[] idInfo = RuntimeObjectInfo.Item1.Split('_');
+                idInfo = RuntimeObjectInfo.Item1.Split('_');
                 GameObject spawnedPrefab = JustSaveManager.Instance.Spawn(idInfo[0], Vector3.zero);
                 JustSaveRuntimeId spawnedIdObj = spawnedPrefab.GetComponent<JustSaveRuntimeId>();
                 spawnedIdObj.SetId(Guid.Parse(idInfo[1]));

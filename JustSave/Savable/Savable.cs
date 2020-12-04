@@ -11,28 +11,32 @@ namespace JustSave
     /// </summary>
     public abstract class Savable : MonoBehaviour, ISavable
     {
+        [Header("Savable Settings:")]
+        public bool Debug = false;
+
         public virtual void JSOnSave() {
-            print("Object " + name + " has been saved.");
+            if (Debug) print("Object " + name + " has been saved.");
         }
 
         public virtual void JSOnSpawned() {
-            print("Object " + name + " has been spawend at " + transform.position + ".");
+            if (Debug) print("Object " + name + " has been spawend at " + transform.position + ".");
         }
 
         public virtual void JSOnDespawned()
         {
-            print("Object " + name + " has been despawend. Returning to pool.");
+            if (Debug) print("Object " + name + " has been despawend. Returning to pool.");
         }
 
         public virtual void JSOnLoad() {
-            print("Object " + name + " has been loaded.");
+            if (Debug) print("Object " + name + " has been loaded.");
         }
 
         public virtual void JSOnPooled() {
-            print("Object " + name + " has been pooled.");
+            if (Debug) print("Object " + name + " has been pooled.");
         }
 
         public void JSDespawn() {
+            if (Debug) print("Calling " + name + " to despawn itself.");
         }
     }
 

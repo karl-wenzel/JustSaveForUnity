@@ -11,6 +11,12 @@ namespace JustSave
     /// </summary>
     public class FileManager
     {
+        public bool DebugThis;
+
+        public FileManager(bool DebugThis) {
+            this.DebugThis = DebugThis;
+        }
+
         /// <summary>
         /// this method takes a savefile and a path and creates or overwrites an file at this path
         /// </summary>
@@ -23,14 +29,14 @@ namespace JustSave
             {
                 BinaryFormatter myBinaryFormatter = new BinaryFormatter();
                 FileStream myFileStream = File.Create(path);
-                Debug.Log("_JS: Saved to " + path);
+                if (DebugThis) Debug.Log("_JS: Saved to " + path);
                 myBinaryFormatter.Serialize(myFileStream, save);
                 myFileStream.Close();
                 return true;
             }
             catch (System.Exception)
             {
-                Debug.LogError("Some error occured while saving file at " + path + ". Returning false.");
+                if (DebugThis) Debug.LogError("Some error occured while saving file at " + path + ". Returning false.");
                 return false;
                 throw;
             }
@@ -47,7 +53,7 @@ namespace JustSave
             {
                 try
                 {
-                    Debug.Log("Reading file at " + path);
+                    if (DebugThis) Debug.Log("Reading file at " + path);
                     BinaryFormatter myBinaryFormatter = new BinaryFormatter();
                     FileStream myFileStream = File.Open(path, FileMode.Open);
                     Save mySave = (Save)myBinaryFormatter.Deserialize(myFileStream);
@@ -56,7 +62,7 @@ namespace JustSave
                 }
                 catch (System.Exception)
                 {
-                    Debug.LogError("Some error occured while loading file at " + path + ". Returning null pointer.");
+                    if (DebugThis) Debug.LogError("Some error occured while loading file at " + path + ". Returning null pointer.");
                     return null;
                     throw;
                 }
@@ -64,7 +70,7 @@ namespace JustSave
             }
             else
             {
-                Debug.LogError("No file found at " + path + ".");
+                if (DebugThis) Debug.LogError("No file found at " + path + ".");
                 return null;
             }
         }

@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace JustSave
 {
     public class JustSaveRuntimeId : JustSaveId
     {
+        public static List<Guid> IDLIST = new List<Guid>();
         Guid id;
         ObjectPool ObjectPoolReference;
         int ObjectPoolIndex;
@@ -12,6 +15,10 @@ namespace JustSave
 
         public void SetId(Guid newId) {
             id = newId;
+            if (IDLIST.Contains(newId)) {
+                Debug.LogError("Id " + newId.ToString() + " doppelt!");
+            }
+            IDLIST.Add(newId);
         }
 
         public Guid GetId() {

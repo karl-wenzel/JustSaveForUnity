@@ -75,7 +75,7 @@ namespace JustSave
         /// <param name="BasePoolSize">The base size to which the pool should be filled</param>
         /// /// <param name="UseForceSpawning">When set to true, the pool will automatically despawn old objects when no more objects are available</param>
         /// <returns></returns>
-        public ObjectPool CreateObjectPool(GameObject PrefabToSpawn, string PrefabId, int BasePoolSize, bool UseForceSpawning)
+        public ObjectPool CreateObjectPool(GameObject PrefabToSpawn, string PrefabId, int BasePoolSize, bool UseForceSpawning, int NotifyToDespawn)
         {
             if (BasePoolSize < 0 || PrefabId == null || PrefabId == "") return null;
             GameObject newPool = new GameObject("ObjectPoolFor" + PrefabToSpawn, typeof(ObjectPool));
@@ -86,6 +86,7 @@ namespace JustSave
             newPoolComponent.SpawnPrefab = SavablePrefabToSpawn;
             newPoolComponent.BasePoolSize = BasePoolSize;
             newPoolComponent.ForceSpawning = UseForceSpawning;
+            newPoolComponent.NotifyToDespawn = NotifyToDespawn <= BasePoolSize ? NotifyToDespawn : BasePoolSize;
             myObjectPoolingManager.RegisterObjectPool(PrefabId, newPoolComponent);
             return newPoolComponent;
         }

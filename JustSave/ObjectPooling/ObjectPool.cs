@@ -21,7 +21,33 @@ namespace JustSave
         [Tooltip("If ForceSpawning is enabled, the pool will despawn the oldest spawned objects if it has no despawned objects anymore")]
         public bool ForceSpawning = false;
 
-        int CurrentSpawnIndex = 0;
+        int CurrentlyActiveObjects = 0;
+
+        public int NotifyToDespawn = 0;
+
+        /// <summary>
+        /// Sets the NotifyToDespawn-value
+        /// </summary>
+        /// <param name="NotifyToDespawn">when an object in the pool is *n* objects away from beeing reused, it will be notified</param>
+        public void SetNotifyToDespawn(int NotifyToDespawn)
+        {
+            if (GetPoolSize() < NotifyToDespawn)
+            {
+                if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("Cant Set NotifyToDespawn to " + NotifyToDespawn + ", because the pool only has " + GetPoolSize() + " members.");
+            }
+            else
+            {
+                this.NotifyToDespawn = NotifyToDespawn;
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of currently spawned objects.
+        /// </summary>
+        /// <returns>number of currently spawned objects</returns>
+        public int GetCurrentlyActiveObjects() {
+            return CurrentlyActiveObjects;
+        }
 
         /// <summary>
         /// class to store information about objects in the pool and outside the pool
@@ -30,16 +56,7 @@ namespace JustSave
         {
             public readonly GameObject ObjectReference;
             bool Spawned;
-            int LastSpawnIndex;
-            public Savable[] SavablesInObject;
-
-            public int GetLastSpawn() {
-                return LastSpawnIndex;
-            }
-
-            public void SetLastSpawn(int LastSpawnIndex) {
-                this.LastSpawnIndex = LastSpawnIndex;
-            }
+            public List<ISavable> SavablesInObject;
 
             public void SetSpawned(bool Spawned)
             {
@@ -55,14 +72,20 @@ namespace JustSave
             {
                 ObjectReference = objectReference;
                 Spawned = spawned;
-                LastSpawnIndex = 0;
 
+                SavablesInObject = new List<ISavable>();
                 //precalculating Savables on Start, so we dont have to search for them everytime we instantiate the prefab
-                SavablesInObject = objectReference.GetComponentsInChildren<Savable>();
+                foreach (Component m_comp in objectReference.GetComponentsInChildren<Component>())
+                {
+                    if (m_comp is ISavable)
+                    {
+                        SavablesInObject.Add(m_comp as ISavable);
+                    }
+                }
             }
         }
 
-        // main datastructure for storing information about the pool
+        // main datastructure for storing information about the pool. The object at the start will be spawned next
         public List<PoolObjectInformation> Pool = new List<PoolObjectInformation>();
 
         private void FillPool()
@@ -71,9 +94,9 @@ namespace JustSave
             {
                 Pool.Add(new PoolObjectInformation(Instantiate(SpawnPrefab.gameObject, transform), false));
                 Pool[i].ObjectReference.SetActive(false);
-                Pool[i].ObjectReference.GetComponent<JustSaveRuntimeId>().SetUp(i, this, SpawnPrefabId);
+                Pool[i].ObjectReference.GetComponent<JustSaveRuntimeId>().SetUp(Pool[i], this, SpawnPrefabId);
 
-                foreach (Savable mySavable in Pool[i].SavablesInObject)
+                foreach (ISavable mySavable in Pool[i].SavablesInObject)
                 {
                     mySavable.JSOnPooled();
                 }
@@ -95,8 +118,10 @@ namespace JustSave
         /// </summary>
         /// <param name="PoolIndex">The Pool Index of the object</param>
         /// <returns>True if the Object was successfully despawned</returns>
-        public bool Despawn(int PoolIndex) {
-            if (GetPoolSize() > PoolIndex) {
+        public bool Despawn(int PoolIndex)
+        {
+            if (GetPoolSize() > PoolIndex)
+            {
                 Despawn(Pool[PoolIndex]);
                 return true;
             }
@@ -107,13 +132,19 @@ namespace JustSave
         /// Despawns a Savable Object by given PoolObjectInformation
         /// </summary>
         /// <param name="PoolObject">The poolentry to use for despawning</param>
-        public void Despawn(PoolObjectInformation PoolObject) {
+        public void Despawn(PoolObjectInformation PoolObject)
+        {
+            if (Dbug.Is(DebugMode.EXTENSIVE)) Debug.Log("Despawning Object " + PoolObject.ObjectReference.GetComponent<JustSaveRuntimeId>().GetSaveIdentifier());
+
             PoolObject.ObjectReference.SetActive(false);
             PoolObject.SetSpawned(false);
             PoolObject.ObjectReference.transform.position = Vector3.zero;
+
+            CurrentlyActiveObjects--;
         }
 
-        public int GetPoolSize() {
+        public int GetPoolSize()
+        {
             return Pool.Count;
         }
 
@@ -123,21 +154,7 @@ namespace JustSave
             //Force Spawning will always find an target
             if (ForceSpawning)
             {
-                int OldestObjectIndex = CurrentSpawnIndex;
-                int At = 0;
-
-
-                for (int i = 0; i < Pool.Count; i++)
-                {
-                    if (Pool[i].GetLastSpawn() < OldestObjectIndex)
-                    {
-                        OldestObjectIndex = Pool[i].GetLastSpawn();
-                        At = i;
-                    }
-                }
-                Pool[At].SetLastSpawn(CurrentSpawnIndex+1);
-                CurrentSpawnIndex++;
-                return Spawn(Pool[At].ObjectReference, Pool[At].SavablesInObject, Position);
+                return Spawn(Pool[0], Pool[0].ObjectReference, Pool[0].SavablesInObject, Position);
             }
             else
             {
@@ -147,20 +164,23 @@ namespace JustSave
                     {
                         thisPoolObjectInformation.SetSpawned(true);
 
-                        thisPoolObjectInformation.SetLastSpawn(CurrentSpawnIndex);
-                        CurrentSpawnIndex++;
-
-                        return Spawn(thisPoolObjectInformation.ObjectReference, thisPoolObjectInformation.SavablesInObject, Position);
+                        return Spawn(thisPoolObjectInformation, thisPoolObjectInformation.ObjectReference, thisPoolObjectInformation.SavablesInObject, Position);
                     }
                 }
             }
             return null;
         }
 
-        public GameObject Spawn(GameObject PrefabToSpawn, Savable[] SavablesInObject, Vector3 Position) {
+        GameObject Spawn(PoolObjectInformation PoolEntry, GameObject PrefabToSpawn, List<ISavable> SavablesInObject, Vector3 Position)
+        {
+            if (Dbug.Is(DebugMode.EXTENSIVE)) Debug.Log("Spawning Object " + PoolEntry.ObjectReference.GetComponent<JustSaveRuntimeId>().GetSaveIdentifier());
+
             PrefabToSpawn.GetComponent<JustSaveRuntimeId>().Spawn();
             PrefabToSpawn.transform.position = Position;
             PrefabToSpawn.SetActive(true);
+
+            Pool.Add(PoolEntry);
+            Pool.RemoveAt(0);
 
             //calling JSOnSpawned() on every Savable in the Prefab
             foreach (Savable mySavable in SavablesInObject)
@@ -168,6 +188,18 @@ namespace JustSave
                 mySavable.JSOnSpawned();
             }
 
+            if (GetPoolSize() - CurrentlyActiveObjects <= NotifyToDespawn)
+            {
+                for (int i = 0; i < NotifyToDespawn; i++)
+                {
+                    foreach (ISavable ISavableComponent in Pool[i].SavablesInObject)
+                    {
+                        ISavableComponent.JSOnNeeded();
+                    }
+                }
+            }
+
+            CurrentlyActiveObjects++;
             return PrefabToSpawn;
         }
     }

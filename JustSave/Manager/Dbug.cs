@@ -3,7 +3,7 @@ namespace JustSave
 {
     public enum DebugMode
     {
-        OFF, FATAL, ERROR, WARN, INFO, DEBUG, ALL
+        OFF, FATAL, ERROR, WARN, INFO, DEBUG, EXTENSIVE, ALL
     }
 
     public class Dbug

@@ -8,7 +8,7 @@ namespace JustSave
     {
         Guid id;
         ObjectPool ObjectPoolReference;
-        int ObjectPoolIndex;
+        ObjectPool.PoolObjectInformation ObjectPoolEntry;
         string PrefabId;
         bool Spawned;
 
@@ -43,15 +43,15 @@ namespace JustSave
         /// <param name="newIndex">Index in the object Pool</param>
         /// <param name="newPool">Reference To the object Pool</param>
         /// <param name="PrefabId">Prefab Identifier, so the saving system knows, which kind of prefab this is</param>
-        public void SetUp(int newIndex, ObjectPool newPool, String PrefabId) {
-            ObjectPoolIndex = newIndex;
+        public void SetUp(ObjectPool.PoolObjectInformation Entry, ObjectPool newPool, String PrefabId) {
+            ObjectPoolEntry = Entry;
             ObjectPoolReference = newPool;
             this.PrefabId = PrefabId;
             SetId(Guid.NewGuid());
         }
 
         public void Despawn() {
-            ObjectPoolReference.Despawn(ObjectPoolIndex);
+            ObjectPoolReference.Despawn(ObjectPoolEntry);
             Spawned = false;
         }
 

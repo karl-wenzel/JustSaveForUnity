@@ -42,12 +42,17 @@ namespace JustSave
                     JSManagedSceneObjects.Add((JustSaveSceneId)JustSaveManagedObject); //saves every scene object reference
                 }
             }
+            if (Dbug.Is(DebugMode.DEBUG)) Debug.Log("Save Interpreter despawned old runtime objects");
+            Debug.DebugBreak();
 
             //loading scene objects
             foreach (JustSaveSceneId IdObj in JSManagedSceneObjects)
             {
                 SyncObject(source, false, IdObj, RememberedFields);
             }
+
+            if (Dbug.Is(DebugMode.DEBUG)) Debug.Log("Save Interpreter synced scene objects");
+
 
             //iterating through spawned objects
             string[] idInfo = new string[2];
@@ -60,8 +65,10 @@ namespace JustSave
                 SyncObject(source, true, spawnedPrefab.GetComponent<JustSaveRuntimeId>(), RememberedFields);
             }
 
+
             if (Dbug.Is(DebugMode.DEBUG))
             {
+                Debug.Log("Save Interpreter spawned and synced runtime objects");
                 Debug.Log("Save Interpreter finished loading Save");
             }
 

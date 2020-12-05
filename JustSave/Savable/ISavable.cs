@@ -30,6 +30,11 @@
         /// this is called, when the object enters the pool
         /// </summary>
         void JSOnPooled();
+
+        /// <summary>
+        /// this is called, when the pool needs more objects. The object should try to despawn itself.
+        /// </summary>
+        void JSOnNeeded();
     }
 
 }

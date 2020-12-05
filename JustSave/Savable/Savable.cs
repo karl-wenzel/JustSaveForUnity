@@ -36,7 +36,7 @@ namespace JustSave
             if (Dbug.Is(DebugMode.INFO) && Debug) print("Object " + name + " has been pooled.");
         }
 
-        public void JSDespawn() {
+        public virtual void JSOnNeeded() {
             if (Dbug.Is(DebugMode.INFO) && Debug) print("Calling " + name + " to despawn itself.");
         }
     }

@@ -43,7 +43,6 @@ namespace JustSave
                 }
             }
             if (Dbug.Is(DebugMode.DEBUG)) Debug.Log("Save Interpreter despawned old runtime objects");
-            Debug.DebugBreak();
 
             //loading scene objects
             foreach (JustSaveSceneId IdObj in JSManagedSceneObjects)

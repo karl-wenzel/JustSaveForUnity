@@ -20,6 +20,10 @@ namespace JustSave
             return id;
         }
 
+        public bool IsSpawned() {
+            return Spawned;
+        }
+
         public string GetPrefabId() {
             return PrefabId;
         }

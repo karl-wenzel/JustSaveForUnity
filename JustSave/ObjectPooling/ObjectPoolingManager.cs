@@ -40,6 +40,10 @@ namespace JustSave
         /// <param name="Position">The position at which the prefab shall be spawned</param>
         /// <returns>True if an object was spawned. False if no object was spawned</returns>
         public GameObject Spawn(string PrefabId, Vector3 Position) {
+            if (PrefabId == null || Position == null) {
+                if (Dbug.Is(DebugMode.ERROR)) Debug.LogWarning("Spawning was called on ObjectPoolingManager with Null-Pointer arguments.");
+                return null;
+            }
             foreach (PoolKey myPoolKey in ObjectPoolingList)
             {
                 if (myPoolKey.key.Equals(PrefabId)) {

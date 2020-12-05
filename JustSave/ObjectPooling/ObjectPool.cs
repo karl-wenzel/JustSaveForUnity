@@ -188,14 +188,11 @@ namespace JustSave
                 mySavable.JSOnSpawned();
             }
 
-            if (GetPoolSize() - CurrentlyActiveObjects <= NotifyToDespawn)
+            if (NotifyToDespawn > 0 && GetPoolSize() - CurrentlyActiveObjects <= NotifyToDespawn)
             {
-                for (int i = 0; i < NotifyToDespawn; i++)
+                foreach (ISavable ISavableComponent in Pool[NotifyToDespawn].SavablesInObject)
                 {
-                    foreach (ISavable ISavableComponent in Pool[i].SavablesInObject)
-                    {
-                        ISavableComponent.JSOnNeeded();
-                    }
+                    ISavableComponent.JSOnNeeded();
                 }
             }
 

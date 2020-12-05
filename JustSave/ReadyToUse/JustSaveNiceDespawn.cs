@@ -73,6 +73,7 @@ public class JustSaveNiceDespawn : Savable
     public override void JSOnDespawned()
     {
         base.JSOnDespawned();
+        transform.localScale = StartScale;
         m_Pooled = true;
     }
 

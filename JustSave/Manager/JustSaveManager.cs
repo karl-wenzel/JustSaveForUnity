@@ -47,9 +47,44 @@ namespace JustSave
         private JustSaveManager()
         {
             //default values for path, filename and fileending
-            path = Application.persistentDataPath + "/";
+            ResetSavePath();
             fileName = "default";
             fileEnding = ".savefile";
+        }
+
+        public void SetFileName(string newFileName)
+        {
+            if (newFileName != "" && newFileName != null)
+            {
+                fileName = newFileName;
+                if (Dbug.Is(DebugMode.INFO)) Debug.Log("Filename set to " + newFileName + ". Complete path is now: " + path + fileName + fileEnding);
+            }
+            else if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("Filename can not be empty or null.");
+        }
+
+        public void SetFileEnding(string newFileEnding)
+        {
+            if (newFileEnding != null)
+            {
+                fileEnding = newFileEnding;
+                if (Dbug.Is(DebugMode.INFO)) Debug.Log("Fileending set to " + newFileEnding + ". Complete path is now: " + path + fileName + fileEnding);
+            }
+            else if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("Fileending can not be null.");
+        }
+
+        public void SetSavePath(string newSavePath)
+        {
+            if (newSavePath != null && newSavePath != "")
+            {
+                path = newSavePath;
+                if (Dbug.Is(DebugMode.INFO)) Debug.Log("Savepath set to " + newSavePath + ". Complete path is now: " + path + fileName + fileEnding);
+            }
+            else if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("Savepath can not be null or empty.");
+        }
+
+        public void ResetSavePath() {
+            path = Application.persistentDataPath + System.IO.Path.DirectorySeparatorChar;
+            if (Dbug.Is(DebugMode.INFO)) Debug.Log("Reset savepath. Complete path is now: " + path + fileName + fileEnding);
         }
 
         string path;
@@ -73,9 +108,10 @@ namespace JustSave
         /// <param name="PrefabToSpawn">The Prefab to spawn. Must have a JustSaveRuntimeId-component</param>
         /// <param name="PrefabId">A prefab id. Should be unique among your other object-pooling-ids</param>
         /// <param name="BasePoolSize">The base size to which the pool should be filled</param>
-        /// /// <param name="UseForceSpawning">When set to true, the pool will automatically despawn old objects when no more objects are available</param>
+        /// <param name="Mode">How the pool should operate if you want to spawn something and the pool is empty.</param>
+        /// <param name="UseForceSpawning">When set to true, the pool will automatically despawn old objects when no more objects are available</param>
         /// <returns></returns>
-        public ObjectPool CreateObjectPool(GameObject PrefabToSpawn, string PrefabId, int BasePoolSize, bool UseForceSpawning, int NotifyToDespawn)
+        public ObjectPool CreateObjectPool(GameObject PrefabToSpawn, string PrefabId, int BasePoolSize, PoolingMode Mode, int NotifyToDespawn)
         {
             if (BasePoolSize < 0 || PrefabId == null || PrefabId == "") return null;
             GameObject newPool = new GameObject("ObjectPoolFor" + PrefabToSpawn, typeof(ObjectPool));
@@ -85,7 +121,7 @@ namespace JustSave
             if (SavablePrefabToSpawn == null) return null;
             newPoolComponent.SpawnPrefab = SavablePrefabToSpawn;
             newPoolComponent.BasePoolSize = BasePoolSize;
-            newPoolComponent.ForceSpawning = UseForceSpawning;
+            newPoolComponent.SetPoolingMode(Mode);
             newPoolComponent.NotifyToDespawn = NotifyToDespawn <= BasePoolSize ? NotifyToDespawn : BasePoolSize;
             myObjectPoolingManager.RegisterObjectPool(PrefabId, newPoolComponent);
             return newPoolComponent;

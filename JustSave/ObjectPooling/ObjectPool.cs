@@ -18,12 +18,14 @@ namespace JustSave
         [Space]
         [Header("Pool Settings")]
         public int BasePoolSize;
-        [Tooltip("If ForceSpawning is enabled, the pool will despawn the oldest spawned objects if it has no despawned objects anymore")]
-        public bool ForceSpawning = false;
+        public PoolingMode Mode = PoolingMode.ForceDespawn;
 
-        int CurrentlyActiveObjects = 0;
-
+        public int CurrentlyActiveObjects = 0;
         public int NotifyToDespawn = 0;
+
+        public void SetPoolingMode(PoolingMode Mode) {
+            this.Mode = Mode;
+        }
 
         /// <summary>
         /// Sets the NotifyToDespawn-value
@@ -45,7 +47,8 @@ namespace JustSave
         /// Returns the number of currently spawned objects.
         /// </summary>
         /// <returns>number of currently spawned objects</returns>
-        public int GetCurrentlyActiveObjects() {
+        public int GetCurrentlyActiveObjects()
+        {
             return CurrentlyActiveObjects;
         }
 
@@ -71,7 +74,6 @@ namespace JustSave
             public PoolObjectInformation(GameObject objectReference, bool spawned)
             {
                 ObjectReference = objectReference;
-                Spawned = spawned;
 
                 SavablesInObject = new List<ISavable>();
                 //precalculating Savables on Start, so we dont have to search for them everytime we instantiate the prefab
@@ -88,15 +90,19 @@ namespace JustSave
         // main datastructure for storing information about the pool. The object at the start will be spawned next
         public List<PoolObjectInformation> Pool = new List<PoolObjectInformation>();
 
-        private void FillPool()
+        /// <summary>
+        /// Fills the pool until it reaches the Base Pool Size
+        /// </summary>
+        /// <param name="Reverse">If this is set to true, the new Pool elements will be added to the beginning of the list. Usefull to make sure, the will be spawned next.</param>
+        private void FillPool(bool Reverse)
         {
             for (int i = Pool.Count; i < BasePoolSize; i++)
             {
-                Pool.Add(new PoolObjectInformation(Instantiate(SpawnPrefab.gameObject, transform), false));
-                Pool[i].ObjectReference.SetActive(false);
-                Pool[i].ObjectReference.GetComponent<JustSaveRuntimeId>().SetUp(Pool[i], this, SpawnPrefabId);
+                Pool.Insert(Reverse ? 0 : i, new PoolObjectInformation(Instantiate(SpawnPrefab.gameObject, transform), false));
+                Pool[Reverse ? 0 : i].ObjectReference.SetActive(false);
+                Pool[Reverse ? 0 : i].ObjectReference.GetComponent<JustSaveRuntimeId>().SetUp(Pool[i], this, SpawnPrefabId);
 
-                foreach (ISavable mySavable in Pool[i].SavablesInObject)
+                foreach (ISavable mySavable in Pool[Reverse ? 0 : i].SavablesInObject)
                 {
                     mySavable.JSOnPooled();
                 }
@@ -105,7 +111,7 @@ namespace JustSave
 
         private void Start()
         {
-            FillPool();
+            FillPool(false);
 
             //registers this pool, incase the user created it in the unity editor. If the pool was created at runtime, the Register function will just not register it a second time.
             JustSaveManager.Instance.GetObjectPoolingManager().RegisterObjectPool(SpawnPrefabId, this);
@@ -152,20 +158,33 @@ namespace JustSave
         {
 
             //Force Spawning will always find an target
-            if (ForceSpawning)
+            if (Mode == PoolingMode.ForceDespawn)
             {
                 return Spawn(Pool[0], Pool[0].ObjectReference, Pool[0].SavablesInObject, Position);
             }
-            else
+            else if (Mode == PoolingMode.ReturnNull)
             {
-                foreach (PoolObjectInformation thisPoolObjectInformation in Pool)
+                if (GetPoolSize() > CurrentlyActiveObjects)
                 {
-                    if (!thisPoolObjectInformation.IsSpawned())
-                    {
-                        thisPoolObjectInformation.SetSpawned(true);
-
-                        return Spawn(thisPoolObjectInformation, thisPoolObjectInformation.ObjectReference, thisPoolObjectInformation.SavablesInObject, Position);
-                    }
+                    return Spawn(Pool[0], Pool[0].ObjectReference, Pool[0].SavablesInObject, Position);
+                }
+                else {
+                    if (Dbug.Is(DebugMode.INFO)) Debug.LogWarning("Object Pool for " + SpawnPrefabId + " empty. (" + CurrentlyActiveObjects + " objects spawned). Cannot spawn object. Returning null.");
+                    return null;
+                }
+            }
+            else if (Mode == PoolingMode.OnDemand)
+            {
+                if (GetPoolSize() > CurrentlyActiveObjects)
+                {
+                    return Spawn(Pool[0], Pool[0].ObjectReference, Pool[0].SavablesInObject, Position);
+                }
+                else
+                {
+                    BasePoolSize++;
+                    FillPool(true);
+                    if (Dbug.Is(DebugMode.INFO)) Debug.LogWarning("Adding new Object to Pool for " + SpawnPrefabId + ". Spawning new object. New pool size: " + GetPoolSize());
+                    return Spawn(Pool[0], Pool[0].ObjectReference, Pool[0].SavablesInObject, Position);
                 }
             }
             return null;

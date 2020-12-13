@@ -90,6 +90,8 @@ To spawn a prefab with JustSave, use `JustSaveManager.Instance.Spawn("YourPrefab
 		}
 	}
 
+[Read more...](./OBJECTPOOLING)
+
 ### The Autosaved Attribute <a name="attribute"></a>
 
 To specify the exact fields, which should be saved and loaded, use the `[Autosaved]`-Attribute. Also make sure, that the field you want to save is `public`, else the **SaveAssembler** can not acess it.
@@ -120,6 +122,9 @@ The **ISavable**-interface includes the following events:
 - void JSOnDespawned();
 - void JSOnPooled();
 - void JSOnNeeded();
+
+> [How to use JSOnSpawned() to properly spawn runtime objects](./OBJECTPOOLING#resettingRuntimeObjects)
+> [Learn about custome despawns and how to use JSOnNeeded() to archieve them](./OBJECTPOOLING#notifyToDespawn)
 
 *example implementation using the **ISavable**-interface (This class saves and loads the position of an object in unity):*
 

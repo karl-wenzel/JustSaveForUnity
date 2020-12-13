@@ -109,7 +109,7 @@ namespace JustSave
         /// <param name="PrefabId">A prefab id. Should be unique among your other object-pooling-ids</param>
         /// <param name="BasePoolSize">The base size to which the pool should be filled</param>
         /// <param name="Mode">How the pool should operate if you want to spawn something and the pool is empty.</param>
-        /// <param name="UseForceSpawning">When set to true, the pool will automatically despawn old objects when no more objects are available</param>
+        /// <param name="NotifyToDespawn">How many objects ahead a pool object will be notified to despawn itself (JSOnNeeded is called)</param>
         /// <returns></returns>
         public ObjectPool CreateObjectPool(GameObject PrefabToSpawn, string PrefabId, int BasePoolSize, PoolingMode Mode, int NotifyToDespawn)
         {

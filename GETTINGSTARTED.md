@@ -50,14 +50,14 @@ Every component on an object with a **JustSaveSceneId**-component and every comp
 
 A runtime object on the other hand is an object, which is not present at start and will be spawned into the scene at runtime. Luckily, JustSave comes with a convenient solution for runtime objects, called object pooling.
 
-When you spawn an object in unity, you probably use `Instantiate(ObjectToSpawn)` or any overload of this method. Do not use this method in combination with JustSave, except you dont want your spawned object to be saved.
+When you spawn an object in unity, you probably use `Instantiate(ObjectToSpawn)` or any overload of this method. Do not use this method in combination with JustSave, except you dont want your spawned object to be saved.  
 Spawning objects in JustSave works only slightly different. You prepare your prefabs in unity as usual (Just drag and drop an object into the project-panel), but make sure, that your Prefab has a **JustSaveRuntimeId**-component on it.
-To add this component to your object, press "Add Component" in the unity inspector and search for *JustSaveRuntimeId*. Note, that the **JustSaveRuntimeId** should be on the parent object of your prefab.
+To add this component to your object, press "Add Component" in the unity inspector and search for *JustSaveRuntimeId*. Note, that the **JustSaveRuntimeId** should be on the parent object of your prefab.  
+
 Now you have to create an objectpool for this object. The object pool will do the spawning for you and can easily be created from script. Just use `JustSaveManager.Instance.CreateObjectPool(YourPrefab, "YourPrefabId", SizeOfThePool, PoolingMode, NotifyToDespawn);`.
 The first argument should be reference to the prefab you created and want to spawn. The second argument is the id, you assign for this prefab. You will need this id later to actually spawn the prefab.
 
 To spawn a prefab with JustSave, use `JustSaveManager.Instance.Spawn("YourPrefabId", SpawnPosition);`. This will also return a reference of type GameObject of the spawned Prefab, so use this reference to your liking.
-And your good to go.
 
 Code example of how to create an object pool and spawn an object from it:
 
@@ -95,5 +95,74 @@ Code example:
 		public int a;
 	}
 
-And thats it. Provided that the object this component sits on has a **JustSaveSceneId** or a **JustSaveRuntimeId** attached to it, the integer a will be included in the savefile and automatically synchronised on load.
+And thats it. Provided that the object this component sits on has a **JustSaveSceneId** or a **JustSaveRuntimeId** attached to it, the integer a will be included in the savefile and automatically be synchronised on load.
 
+### The ISavable interface and the Savable class
+
+The **ISavable**-interface allows you to implement methods, which will be called when certain events related to saving occur. You can add it to any of your classes, that are managed by JustSave.  
+This interface is exceptionally important on runtime objects (prefabs, spawned with object pooling), because you have to reset this object every time it is spawned.
+
+The **ISavable**-interface includes the following events:
+
+- void JSOnSave();
+- void JSOnLoad();
+- void JSOnSpawned();
+- void JSOnDespawned();
+- void JSOnPooled();
+- void JSOnNeeded();
+
+example implementation using the **ISavable**-interface (This class saves and loads the position of an object in unity):
+
+	using JustSave;
+	using UnityEngine;
+
+	public class SaveTransform : MonoBehaviour, ISavable
+	{
+		[Autosaved]
+		[HideInInspector]
+		public Vector3 Position;
+
+		public void JSOnSave() {
+			Position = transform.position;
+		}
+
+		public void JSOnLoad() {
+			transform.position = Position;
+		}
+
+		public void JSOnSpawned() {}
+
+		public void JSOnDespawned() {}
+
+		public void JSOnPooled() {}
+
+		public void JSOnNeeded() {}
+	}
+
+
+If you do not want to implement all the methods, for example you just need `JSOnSpawned` to reset your prefab when it is spawned, you can also derive your classes from **Savable**.  
+The **Savable**-class is just basically an empty class which implements **ISavable**. You can then overwrite the methods if needed. Note that Savable derives from MonoBehaviour, so you can use Start() and Update() etc. as usual.
+
+example implementation using the **Savable**-class (This class saves and loads the position of an object in unity):
+
+	using JustSave;
+	using UnityEngine;
+
+	public class SaveTransform : Savable
+	{
+		[Autosaved]
+		[HideInInspector]
+		public Vector3 Position;
+
+		public override void JSOnSave()
+		{
+			base.JSOnSave();
+			Position = transform.position;
+		}
+
+		public override void JSOnLoad()
+		{
+			base.JSOnLoad();
+			transform.position = Position;
+		}
+	}

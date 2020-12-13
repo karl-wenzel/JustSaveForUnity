@@ -5,7 +5,7 @@ Just Save comes with an object pooling system included. [What this means](#WhatI
 ## What is object pooling <a name="WhatIs"></a>
 
 Object pooling means that if you want to spawn an object, instead of creating a new one, the object is taken from a pool of inactive objects.
-If you don't need the spawned object anymore, instead of just destroying it, you can return it to the pool to reuse it late.
+If you don't need the spawned object anymore, instead of just destroying it, you can return it to the pool to reuse it later.
 In most of the cases, this has a positive impact on performance.
 If you want to know more, read [the wikipedia article](https://en.wikipedia.org/wiki/Object_pool_pattern).
 
@@ -97,3 +97,19 @@ In the example below, the lifetimeCounter should not count how long the object l
 
 > Note: If you want your lifetimeCounter to be consistent when saving an loading again, you have to use the **[Autosaved]**-attribute on the field `public float lifetimeCounter`.
 
+### Returning objects to the pool whenever you want
+
+If you just want to despawn an object, because you dont need it anymore, feel free to call the `Despawn()`-method on its **JustSaveId**. The Object will then be despawned and returned to it's pool.
+
+*example implementation:*
+
+	using JustSave;
+	using UnityEngine;
+
+	public class DespawnThis : MonoBehaviour
+	{
+		public void DespawnMePlease()
+		{
+			GetComponent<JustSaveId>().Despawn();
+		}
+	}

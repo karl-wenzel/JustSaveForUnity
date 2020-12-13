@@ -63,7 +63,7 @@ Please be aware, that this mode can lead to lag spikes, when spawning large quan
 
 ### Notify to despawn <a name="notifyToDespawn"></a>
 
-This is an usefull setting to integrate better Despawning into your application. Notify to despawn sets how many objects ahead an object in the pool should be informed before it is spawned. 
+This is an usefull setting to integrate better despawning into your application. Notify to despawn sets how many objects ahead an object in the pool should be informed before it is spawned. 
 The **ISavable**-interface has a JSOnNeeded()-method, which is called, when the Runtime Object will soon be despawned. You can use this to gain more control over the despawning process and implement custom despawns.
 For an example implementation on how to code a custom despawn, see the **JustSaveNiceDespawn** example class, which is included in the JustSave package.
 

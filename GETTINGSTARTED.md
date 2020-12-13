@@ -123,9 +123,9 @@ The **ISavable**-interface includes the following events:
 - void JSOnPooled();
 - void JSOnNeeded();
 
-> [How to use JSOnSpawned() to properly spawn runtime objects](./OBJECTPOOLING#resettingRuntimeObjects)  
+> [How to use JSOnSpawned() to properly spawn runtime objects](./OBJECTPOOLING.md#resettingRuntimeObjects)  
   
-> [Learn about custome despawns and how to use JSOnNeeded() to archieve them](./OBJECTPOOLING#notifyToDespawn)
+> [Learn about custome despawns and how to use JSOnNeeded() to archieve them](./OBJECTPOOLING.md#notifyToDespawn)
 
 *example implementation using the **ISavable**-interface (This class saves and loads the position of an object in unity):*
 

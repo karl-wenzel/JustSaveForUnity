@@ -2,7 +2,7 @@
 
 This document will guide you through the first steps of using the JustSave package in unity.
 
-## Table of Contents
+## Table of contents
 1. [How to install this package in unity](#install)
 2. [How to use the JustSaveManager](#use)
 3. [How to prepare your game for loading and saving](#prepare)

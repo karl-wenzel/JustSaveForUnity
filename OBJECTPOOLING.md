@@ -99,7 +99,7 @@ In the example below, the lifetimeCounter should not count how long the object l
 
 ### Returning objects to the pool whenever you want
 
-If you just want to despawn an object, because you dont need it anymore, feel free to call the `Despawn()`-method on its **JustSaveId**. The Object will then be despawned and returned to it's pool.
+If you just want to despawn an object, because you dont need it anymore, feel free to call the `Despawn()`-method on its **JustSaveRuntimeId**. The Object will then be despawned and returned to it's pool.
 
 *example implementation:*
 

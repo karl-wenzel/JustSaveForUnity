@@ -95,7 +95,7 @@ In the example below, the lifetimeCounter should not count how long the object l
 		}
 	}
 
-> Note: If you want your lifetimeCounter to be consistent when saving an loading again, you have to use the **[Autosaved]**-attribute on the field `public float lifetimeCounter`.
+> Note: If you want your lifetimeCounter to be consistent when saving and loading again, you have to use the **[Autosaved]**-attribute on the field `public float lifetimeCounter`.
 
 ### Returning objects to the pool whenever you want
 

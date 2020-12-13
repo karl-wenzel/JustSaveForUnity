@@ -24,7 +24,7 @@ So in order to use anything from this package you must include the namespace in 
 To use JustSave, you should first get a reference to the **JustSaveManager**. The **JustSaveManager** is the central class of this package and controls everything.
 With `JustSaveManager.Instance` you can get a reference to the singleton-instance of this manager class. Use this to access all the functionality of this manager. You can store this reference, if you like, or use it directly.
 
-An example, how to use `JustSaveManager.Instance`:
+*An example, how to use `JustSaveManager.Instance`:*
 
 	using JustSave;
 
@@ -69,7 +69,7 @@ The first argument should be reference to the prefab you created and want to spa
 
 To spawn a prefab with JustSave, use `JustSaveManager.Instance.Spawn("YourPrefabId", SpawnPosition);`. This will also return a reference of type GameObject of the spawned Prefab, so use this reference to your liking.
 
-Code example of how to create an object pool and spawn an object from it:
+*code example of how to create an object pool and spawn an object from it:*
 
 	using JustSave
 
@@ -95,7 +95,7 @@ Code example of how to create an object pool and spawn an object from it:
 To specify the exact fields, which should be saved and loaded, use the `[Autosaved]`-Attribute. Also make sure, that the field you want to save is `public`, else the **SaveAssembler** can not acess it.
 If you don't want your public fields to show up in the unity inspector, I suggest also using the `[HideInInspector]` attribute.
 
-Code example:
+*code example:*
 
 	using JustSave
 
@@ -105,7 +105,7 @@ Code example:
 		public int a;
 	}
 
-And thats it. Provided that the object this component sits on has a **JustSaveSceneId** or a **JustSaveRuntimeId** attached to it, the integer a will be included in the savefile and automatically be synchronised on load.
+And that is it. Provided that the object this component is on has a **JustSaveSceneId** or a **JustSaveRuntimeId** attached to it, the integer *a* will be included in the savefile and automatically be synchronised on load.
 
 ### The ISavable interface and the Savable class <a name="savables"></a>
 
@@ -121,7 +121,7 @@ The **ISavable**-interface includes the following events:
 - void JSOnPooled();
 - void JSOnNeeded();
 
-example implementation using the **ISavable**-interface (This class saves and loads the position of an object in unity):
+*example implementation using the **ISavable**-interface (This class saves and loads the position of an object in unity):*
 
 	using JustSave;
 	using UnityEngine;
@@ -151,9 +151,9 @@ example implementation using the **ISavable**-interface (This class saves and lo
 
 
 If you do not want to implement all the methods, for example you just need `JSOnSpawned` to reset your prefab when it is spawned, you can also derive your classes from **Savable**.  
-The **Savable**-class is just basically an empty class which implements **ISavable**. You can then overwrite the methods if needed. Note that Savable derives from MonoBehaviour, so you can use Start() and Update() etc. as usual.
+The **Savable**-class is an class without functionality which implements **ISavable**. You can then overwrite the methods you need. Note that Savable derives from MonoBehaviour, so you can use Start() and Update() etc. as usual.  
 
-example implementation using the **Savable**-class (This class saves and loads the position of an object in unity):
+*example implementation using the **Savable**-class (This class saves and loads the position of an object in unity):*
 
 	using JustSave;
 	using UnityEngine;
@@ -181,7 +181,7 @@ example implementation using the **Savable**-class (This class saves and loads t
 
 When it comes to performing the load or save, JustSave is very simple. Just call 'Save()' or 'Load()' in the **JustSaveManager**.
 
-example implementation:
+*example implementation:*
 
 	using UnityEngine;
 	using JustSave;
@@ -207,7 +207,7 @@ If you want to specify, where the savefile should be saved to or loaded from, yo
 - JustSaveManager.SetFileEnding() sets the fileending to be saved or loaded
 - JustSaveManager.SetFilePath() sets the path from which the savefile will be loaded or to which it will be saved
 
-example configuration:
+*example configuration:*
 
 	using UnityEngine;
 	using JustSave;

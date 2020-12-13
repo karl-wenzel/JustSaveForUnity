@@ -72,14 +72,14 @@ namespace JustSave
             else if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("Fileending can not be null.");
         }
 
-        public void SetSavePath(string newSavePath)
+        public void SetFilePath(string newFilePath)
         {
-            if (newSavePath != null && newSavePath != "")
+            if (newFilePath != null && newFilePath != "")
             {
-                path = newSavePath;
-                if (Dbug.Is(DebugMode.INFO)) Debug.Log("Savepath set to " + newSavePath + ". Complete path is now: " + path + fileName + fileEnding);
+                path = newFilePath;
+                if (Dbug.Is(DebugMode.INFO)) Debug.Log("Filepath set to " + newFilePath + ". Complete path is now: " + path + fileName + fileEnding);
             }
-            else if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("Savepath can not be null or empty.");
+            else if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("Filepath can not be null or empty.");
         }
 
         public void ResetSavePath() {

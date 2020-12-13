@@ -2,11 +2,21 @@
 
 This document will guide you through the first steps of using the JustSave package in unity.
 
-## How to install this package in unity
+## Table of Contents
+1. [How to install this package in unity] (#install)
+2. [How to use the JustSaveManager] (#use)
+3. [How to prepare your game for loading and saving] (#prepare)
+	1. [Preparing Scene Objects] (#sceneObjects)
+	2. [Preparing Runtime Objects] (#runtimeObjects)
+	3. [The Autosaved-Attribute] (#attribute)
+	4. [The ISavable interface and the Savable class] (#savables)
+4. [How to actually load and save] (#loadAndSave)
+
+## How to install this package in unity <a name="install"></a>
 
 Just import it and make sure that the JustSave folder, containing all the files from this package, is saved somewhere in your Asset-folder.
 
-## How to use the package to do something
+## How to use the JustSaveManager <a name="use"></a>
 
 First note, that everything in this package is contained in the JustSave-namespace.
 So in order to use anything from this package you must include the namespace in your classes. Add `using JustSave;` at the beginning of your script.
@@ -35,18 +45,18 @@ An example, how to use `JustSaveManager.Instance`:
 		}
 	}
 	
-## How to prepare your game for loading and saving
+## How to prepare your game for loading and saving <a name="prepare"></a>
 
 Although, the package will assemble the save automatically, when you call `JustSaveManager.Instance.Save()`, you have to specify, which data the save should include.
 
-### Preparing Scene Objects
+### Preparing Scene Objects <a name="sceneObjects"></a>
 
 In the context of JustSave, scene objects refers to objects, which are present at the start of the game. So every object, which is not spawned at runtime.
 Every scene object, which should be managed by JustSave, needs a **JustSaveSceneId**-component on it.
 You can add this component by navigating to your object in the unity editor, pressing "Add Component" and searching for *JustSaveSceneId*.
 Every component on an object with a **JustSaveSceneId**-component and every component on every child object of this object will be searched for savable data.
 
-### Preparing Runtime Objects
+### Preparing Runtime Objects <a name="runtimeObjects"></a>
 
 A runtime object on the other hand is an object, which is not present at start and will be spawned into the scene at runtime. Luckily, JustSave comes with a convenient solution for runtime objects, called object pooling.
 
@@ -80,7 +90,7 @@ Code example of how to create an object pool and spawn an object from it:
 		}
 	}
 
-### The Autosaved Attribute
+### The Autosaved Attribute <a name="attribute"></a>
 
 To specify the exact fields, which should be saved and loaded, use the `[Autosaved]`-Attribute. Also make sure, that the field you want to save is `public`, else the **SaveAssembler** can not acess it.
 If you don't want your public fields to show up in the unity inspector, I suggest also using the `[HideInInspector]` attribute.
@@ -97,7 +107,7 @@ Code example:
 
 And thats it. Provided that the object this component sits on has a **JustSaveSceneId** or a **JustSaveRuntimeId** attached to it, the integer a will be included in the savefile and automatically be synchronised on load.
 
-### The ISavable interface and the Savable class
+### The ISavable interface and the Savable class <a name="savables"></a>
 
 The **ISavable**-interface allows you to implement methods, which will be called when certain events related to saving occur. You can add it to any of your classes, that are managed by JustSave.  
 This interface is exceptionally important on runtime objects (prefabs, spawned with object pooling), because you have to reset this object every time it is spawned.
@@ -166,3 +176,52 @@ example implementation using the **Savable**-class (This class saves and loads t
 			transform.position = Position;
 		}
 	}
+
+## How to actually load and save <a name="loadAndSave"></a>
+
+When it comes to performing the load or save, JustSave is very simple. Just call 'Save()' or 'Load()' in the **JustSaveManager**.
+
+example implementation:
+
+	using UnityEngine;
+	using JustSave;
+
+	public class ScriptManager : MonoBehaviour
+	{
+		public void Save()
+		{
+			JustSaveManager.Instance.Save();
+		}
+
+		public void Load()
+		{
+			JustSaveManager.Instance.Load();
+		}
+	}
+
+By default, your savefile is saved to the persistent datapath of your application. If you don't know, where that is, don't worry: everything should work just fine.
+
+If you want to specify, where the savefile should be saved to or loaded from, you can change  the filepath, the filename and even set your custome fileending:
+
+- JustSaveManager.SetFileName() sets the name of the savefile or the name of the file to be loaded
+- JustSaveManager.SetFileEnding() sets the fileending to be saved or loaded
+- JustSaveManager.SetFilePath() sets the path from which the savefile will be loaded or to which it will be saved
+
+example configuration:
+
+	using UnityEngine;
+	using JustSave;
+
+	public class JustSaveConfiguration : MonoBehaviour
+	{
+		public void Start()
+		{
+			JustSaveManager JS = JustSaveManager.Instance;
+
+			JS.SetFileName("MySave");
+			JS.SetFileEnding(".supersave");
+			JS.SetFilePath(Application.persistentDataPath + "\");
+		}
+	}
+
+

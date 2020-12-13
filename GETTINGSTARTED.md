@@ -90,7 +90,7 @@ To spawn a prefab with JustSave, use `JustSaveManager.Instance.Spawn("YourPrefab
 		}
 	}
 
-[Read more...](./OBJECTPOOLING)
+[Read more...](./OBJECTPOOLING.md)
 
 ### The Autosaved Attribute <a name="attribute"></a>
 

@@ -3,14 +3,14 @@
 This document will guide you through the first steps of using the JustSave package in unity.
 
 ## Table of Contents
-1. [How to install this package in unity] (#install)
-2. [How to use the JustSaveManager] (#use)
-3. [How to prepare your game for loading and saving] (#prepare)
-	1. [Preparing Scene Objects] (#sceneObjects)
-	2. [Preparing Runtime Objects] (#runtimeObjects)
-	3. [The Autosaved-Attribute] (#attribute)
-	4. [The ISavable interface and the Savable class] (#savables)
-4. [How to actually load and save] (#loadAndSave)
+1. [How to install this package in unity](#install)
+2. [How to use the JustSaveManager](#use)
+3. [How to prepare your game for loading and saving](#prepare)
+	1. [Preparing Scene Objects](#sceneObjects)
+	2. [Preparing Runtime Objects](#runtimeObjects)
+	3. [The Autosaved-Attribute](#attribute)
+	4. [The ISavable interface and the Savable class](#savables)
+4. [How to actually load and save](#loadAndSave)
 
 ## How to install this package in unity <a name="install"></a>
 

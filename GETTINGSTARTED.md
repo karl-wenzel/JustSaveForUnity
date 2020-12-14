@@ -12,7 +12,7 @@ This document will guide you through the first steps of using the JustSave packa
 	4. [The ISavable interface and the Savable class](#savables)
 4. [How to actually load and save](#loadAndSave)
 
-## How to install this package in unity <a name="install"></a>
+## How to install this package in Unity <a name="install"></a>
 
 Just import it and make sure that the JustSave folder, containing all the files from this package, is saved somewhere in your Asset folder.
 

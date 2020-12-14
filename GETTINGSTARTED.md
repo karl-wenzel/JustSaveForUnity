@@ -66,7 +66,7 @@ To add this component to your object, press "Add Component" in the unity inspect
 
 Now you have to create an objectpool for this object. The object pool will do the spawning for you and can easily be created from script. Just use `JustSaveManager.Instance.CreateObjectPool(YourPrefab, "YourPrefabId", SizeOfThePool, PoolingMode, NotifyToDespawn);`.
 The first argument should be reference to the prefab you created and want to spawn. The second argument is the id, you assign for this prefab. You will need this id later to actually spawn the prefab.  
-[Read about the other arguments...](./OBJECTPOOLING.md#poolingModes)
+[Read about the other arguments...](./OBJECTPOOLING.md#createObjectPool)
 
 To spawn a prefab with JustSave, use `JustSaveManager.Instance.Spawn("YourPrefabId", SpawnPosition);`. This will also return a reference of type GameObject of the spawned Prefab, so use this reference to your liking.
 

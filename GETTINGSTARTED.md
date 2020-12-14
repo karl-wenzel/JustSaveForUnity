@@ -185,7 +185,7 @@ The **Savable**-class is an class without functionality which implements **ISava
 
 ## How to actually load and save <a name="loadAndSave"></a>
 
-When it comes to performing the load or save, JustSave is very simple. Just call 'Save()' or 'Load()' in the **JustSaveManager**.
+When it comes to performing the load or save, JustSave is very simple. Just call `Save()` or `Load()` in the **JustSaveManager**.
 
 *example implementation:*
 

@@ -1,6 +1,6 @@
 # Getting Started
 
-This document will guide you through the first steps of using the JustSave package in unity.
+This document will guide you through the first steps of using the JustSave package in Unity.
 
 ## Table of contents
 1. [How to install this package in unity](#install)
@@ -14,7 +14,7 @@ This document will guide you through the first steps of using the JustSave packa
 
 ## How to install this package in unity <a name="install"></a>
 
-Just import it and make sure that the JustSave folder, containing all the files from this package, is saved somewhere in your Asset-folder.
+Just import it and make sure that the JustSave folder, containing all the files from this package, is saved somewhere in your Asset folder.
 
 ## How to use the JustSaveManager <a name="use"></a>
 

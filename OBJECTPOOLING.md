@@ -35,6 +35,8 @@ When dealing with object pools, JustSave will do almost anything for you. You ju
 	}
 
 (Read about the general approach in ["Getting Started"](./GETTINGSTARTED.md#runtimeObjects).)
+ 
+## Creating an object pool <a name="createObjectPool"></a>
 
 When creating an object pool with `JustSaveManager.Instance.CreateObjectPool(YourPrefab, "YourPrefabId", SizeOfThePool, PoolingMode, NotifyToDespawn);`, you can set several parameters in the arguments of the method.
 

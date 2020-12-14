@@ -11,7 +11,7 @@ public class JustSaveNiceDespawn : Savable
     public float DespawnTime;
     Vector3 StartScale;
     public float EndScaleFactor = 0.1f;
-    public float StartDespawnTime;
+    float StartDespawnTime;
     bool m_Pooled;
     [Autosaved]
     [HideInInspector]

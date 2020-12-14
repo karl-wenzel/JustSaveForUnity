@@ -51,21 +51,21 @@ Although, the package will assemble the save automatically, when you call `JustS
 
 ### Preparing Scene Objects <a name="sceneObjects"></a>
 
-In the context of JustSave, scene objects refers to objects, which are present at the start of the game. So every object, which is not spawned at runtime.
+In the context of JustSave, scene objects are objects, which are present at the start of the game. So every object, which is not spawned at runtime.
 Every scene object, which should be managed by JustSave, needs a **JustSaveSceneId**-component on it.
 You can add this component by navigating to your object in the unity editor, pressing "Add Component" and searching for *JustSaveSceneId*.
 Every component on an object with a **JustSaveSceneId**-component and every component on every child object of this object will be searched for savable data.
 
 ### Preparing Runtime Objects <a name="runtimeObjects"></a>
 
-A runtime object on the other hand is an object, which is not present at start and will be spawned into the scene at runtime. Luckily, JustSave comes with a convenient solution for runtime objects, called object pooling.
+A runtime object on the other hand is an object, which is not present on start and will be spawned into the scene at runtime. Luckily, JustSave comes with a convenient solution for runtime objects, called object pooling.
 
 When you spawn an object in unity, you probably use `Instantiate(ObjectToSpawn)` or any overload of this method. Do not use this method in combination with JustSave, except you dont want your spawned object to be saved.  
 Spawning objects in JustSave works only slightly different. You prepare your prefabs in unity as usual (Just drag and drop an object into the project-panel), but make sure, that your Prefab has a **JustSaveRuntimeId**-component on it.
 To add this component to your object, press "Add Component" in the unity inspector and search for *JustSaveRuntimeId*. Note, that the **JustSaveRuntimeId** should be on the parent object of your prefab.  
 
 Now you have to create an objectpool for this object. The object pool will do the spawning for you and can easily be created from script. Just use `JustSaveManager.Instance.CreateObjectPool(YourPrefab, "YourPrefabId", SizeOfThePool, PoolingMode, NotifyToDespawn);`.
-The first argument should be reference to the prefab you created and want to spawn. The second argument is the id, you assign for this prefab. You will need this id later to actually spawn the prefab.  
+The first argument should be reference to the prefab you created and want to spawn. The second argument is the id, you assign to this prefab. You will need this id later to actually spawn the prefab.  
 [Read about the other arguments...](./OBJECTPOOLING.md#createObjectPool)
 
 To spawn a prefab with JustSave, use `JustSaveManager.Instance.Spawn("YourPrefabId", SpawnPosition);`. This will also return a reference of type GameObject of the spawned Prefab, so use this reference to your liking.

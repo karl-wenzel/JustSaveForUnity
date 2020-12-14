@@ -42,9 +42,9 @@ When creating an object pool with `JustSaveManager.Instance.CreateObjectPool(You
 | -------------- | --------- | ------------ | --------------------------------------------------------- |
 | PrefabToSpawn | GameObject | YourPrefab | This should be a reference to the prefab you want to spawn |
 | PrefabId | String | "YourPrefabId" | Assign a unique Id to your prefab here. This can be anything you want. Use this for spawning the prefab later. |
-| BasePoolSize | Integer | 5 | This is the default size of the pool. JustSave will create a new pool and fill it with as many objects as you specify here. |
-| Mode | PoolingMode | PoolingMode.OnDemand | The pooling mode specifies, how the pool will react if you want to spawn something and it is empty. |
-| NotifyToDespawn | Integer | 2 | If you already spawned 3 of the 5 objects in your pool and spawn a 4-th object, the pool will notify the first object you spawned to despawn itself. |
+| BasePoolSize | Integer | 5 | This is the default size of the pool. JustSave will create a new pool and fill it with this number of objects. |
+| Mode | PoolingMode | PoolingMode.OnDemand | The pooling mode specifies, how an empty pool reacts if you want to spawn something. |
+| NotifyToDespawn | Integer | 2 | If you already spawned 3 of the 5 objects in your pool and spawn a 4-th object, the pool will notify the first object to despawn itself. |
 
 ### Pooling modes <a name="poolingModes"></a>
 
@@ -70,7 +70,9 @@ For an example implementation on how to code a custom despawn, see the **JustSav
 ### Resetting runtime objects <a name="resettingRuntimeObjects"></a>
 
 When using object pooling, you have to be especially carefull about the lifecycle of your prefabs. When they are recycled (when they are spawned after beeing despawned), their fields should be reset.
-Use the method `JSOnSpawned()` from the **ISavable**-interface for that. This method is called every time, an object is spawned. In most cases, use `JSOnSpawned()` instead of `Start()` or `Awake()`.
+Use the method `JSOnSpawned()` from the **ISavable**-interface for that. This method is called every time, an object is spawned. In most cases, use `JSOnSpawned()` instead of `Start()` or `Awake()`.  
+> Be carefull if you have a rigidbody on your prefab, or some other unity script which has fields, that need to be reset. You must reset them on Spawn, else unpredictable behaviour might occur. See the **JustSaveRigidbody** example class, which is included in the JustSave package, for an example implementation  
+
 In the example below, the lifetimeCounter should not count how long the object lived in earlier lifecycles. Therefore, it must be reset, when the object is spawned.
 
 *how to write a class, counting the lifetime of a spawned prefab*

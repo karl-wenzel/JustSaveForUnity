@@ -23,7 +23,6 @@ namespace JustSave
         /// <param name="startDict">a predefined dictionary to include. The JSDictionary will include a deep copy of it.</param>
         public JSDictionary(Dictionary<string, T> startDict)
         {
-            //creating a deep copy
             savedValues = new Dictionary<string, T>(startDict);
         }
 
@@ -60,10 +59,7 @@ namespace JustSave
                 savedValues.Remove(key);
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
 

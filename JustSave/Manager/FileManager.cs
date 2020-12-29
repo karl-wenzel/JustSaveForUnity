@@ -29,9 +29,9 @@ namespace JustSave
                 myFileStream.Close();
                 return true;
             }
-            catch (System.Exception)
+            catch (System.Exception myException)
             {
-                if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("Some error occured while saving file at " + path + ". Returning false.");
+                if (Dbug.Is(DebugMode.ERROR)) Debug.LogError("Some error occured: " + myException.Message + path + ". Returning false.");
                 return false;
                 throw;
             }

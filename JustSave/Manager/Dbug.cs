@@ -17,7 +17,7 @@ namespace JustSave
         /// <returns>true if the message should be printed</returns>
         public static bool Is(DebugMode MinNeededLevel)
         {
-            return GlobalLevel >= MinNeededLevel ? true : false;
+            return GlobalLevel >= MinNeededLevel;
         }
     }
 }

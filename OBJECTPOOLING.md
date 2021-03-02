@@ -1,3 +1,5 @@
+![JustSaveLogo](Logo.png)
+
 # More About Object Pooling
 
 Just Save comes with an object pooling system included. [What this means](#WhatIs), [how it works](#HowItWorks) and [what you should know about](#poolingModes).
